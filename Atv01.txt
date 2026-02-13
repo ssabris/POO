@@ -1,0 +1,41 @@
+1. O que é programação orientada a objetos (POO)?
+
+A Programação Orientada a Objetos (POO) é um paradigma de programação baseado no conceito de objetos, que podem conter dados na forma de campos (também conhecidos como atributos) e códigos na forma de procedimentos (conhecidos como métodos).
+
+Ao contrário da programação estruturada, que foca em funções e lógica sequencial, a POO tenta aproximar o software do mundo real, modelando sistemas como uma interação entre objetos autônomos.
+
+2. Quais as vantagens em utilizar POO em relação a programação estruturada?
+
+As principais vantagens incluem:
+
+Reutilização de Código: Através da herança e polimorfismo, é possível reaproveitar classes inteiras sem precisar reescrever código.
+
+Manutenibilidade: Como o código é modular (dividido em objetos independentes), é mais fácil localizar e corrigir bugs em uma parte específica sem quebrar o sistema todo.
+
+Escalabilidade: É mais fácil gerenciar e expandir sistemas grandes e complexos quando eles são divididos em objetos menores e organizados.
+
+Mapeamento do Mundo Real: A POO permite modelar problemas de forma mais natural e intuitiva, pois as classes representam entidades reais (ex: Cliente, Produto, Carro).
+
+3. Defina o conceito de objeto no paradigma POO
+
+Um Objeto é uma instância concreta de uma Classe. Se a Classe é o "molde" ou a "planta baixa", o Objeto é a "casa construída" a partir desse molde.
+
+Ele agrega:
+
+Estado: Representado pelos seus atributos (variáveis/dados).
+
+Comportamento: Representado pelos seus métodos (funções/ações).
+
+Por exemplo, se Carro é a classe, um objeto seria um carro específico (ex: Fusca Azul, placa ABC-1234) criado a partir dessa classe.
+
+4. Explique os 4 principais fundamentos do paradigma POO
+
+Os quatro pilares que sustentam a POO são:
+
+Abstração: É a capacidade de focar apenas nos aspectos essenciais de um objeto para o contexto do sistema, ignorando detalhes irrelevantes ou complexos demais. É simplificar a realidade para transformá-la em código.
+
+Encapsulamento: Consiste em "esconder" os detalhes internos de funcionamento de um objeto e expor apenas o necessário. Isso protege os dados do objeto de acessos indevidos e garante que ele seja usado corretamente.
+
+Herança: Permite que uma classe (filha) herde características e comportamentos de outra classe (mãe). Isso promove a reutilização de código e cria uma hierarquia lógica.
+
+Polimorfismo: É a capacidade de tratar objetos de classes diferentes de maneira uniforme. Por exemplo, classes diferentes podem ter um método com o mesmo nome (como emitirSom), mas cada uma executa esse método de uma forma específica (o gato mia, o cachorro late).
