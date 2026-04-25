@@ -125,5 +125,5 @@ A expressão `(categoria = ?)` retorna `1` (verdadeiro) quando a categoria bate 
 
 | Nome | GitHub |
 |---|---|
-| [Seu Nome] | [@seuusuario](https://github.com) |
-| Guilherme Cordovil | [@guilhermecordovil](https://github.com) |
+| Sabrina Bernardi | [@ssabris]([https://github.com/ssabris])|
+| Guilherme Cordovil | [@guilherme9792]([https://github.com/guilherme9727]) |
