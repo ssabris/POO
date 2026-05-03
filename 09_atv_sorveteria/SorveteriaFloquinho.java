@@ -8,7 +8,7 @@ public class SorveteriaFloquinho {
     private final String USER    = "root";
     private final String PASS    = "1234";
 
-    public SorveteriaDAO() {
+    public SorveteriaFloquinho() {
         inicializarBanco();
     }
 
@@ -70,13 +70,13 @@ public class SorveteriaFloquinho {
             if (rs.getInt(1) == 0) {
                 stmt.execute(
                     "INSERT INTO produtos (nome, categoria, preco) VALUES " +
-                    "('Casquinha de Baunilha', 'Tradicional', 5.00)," +
+                    "('Casquinha de Baunilha', 'Creme', 5.00)," +
                     "('Sundae de Morango', 'Frutas', 10.00)," +
                     "('Milkshake de Chocolate', 'Chocolate', 15.00)," +
                     "('Picolé de Limão', 'Frutas', 4.00)," +
                     "('Taça Trufada', 'Chocolate', 20.00)," +
                     "('Casquinha de Morango', 'Frutas', 6.00)," +
-                    "('Sorvete de Creme', 'Tradicional', 7.00)," +
+                    "('Sorvete de Creme', 'Creme', 7.00)," +
                     "('Brownie com Sorvete', 'Chocolate', 18.00)"
                 );
                 System.out.println("Produtos iniciais inseridos com sucesso.");
