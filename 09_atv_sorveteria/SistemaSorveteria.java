@@ -22,7 +22,7 @@ public class SistemaSorveteria extends JFrame {
     }
 
     private void iniciarFluxoLogin() {
-        String nome = JOptionPane.showInputDialog(this, "Bem-vindo à Sorveteria Floquinho! 🍦\nQual o seu nome?", "Login", JOptionPane.QUESTION_MESSAGE);
+        String nome = JOptionPane.showInputDialog(this, "Bem-vinde à Sorveteria Floquinho! 🍦\nQual o seu nome?", "Login", JOptionPane.QUESTION_MESSAGE);
 
         if (nome == null || nome.trim().isEmpty()) {
             System.exit(0);
@@ -32,7 +32,7 @@ public class SistemaSorveteria extends JFrame {
         usuarioLogado = dao.identificarUsuario(nome, null);
 
         if (usuarioLogado == null) {
-            String[] opcoes = {"Tradicional", "Frutas", "Chocolate"};
+            String[] opcoes = {"Creme", "Frutas", "Chocolate"};
             int escolha = JOptionPane.showOptionDialog(
                 this,
                 "Olá, " + nome + "! Qual tipo de sorvete você prefere?",
@@ -58,12 +58,12 @@ public class SistemaSorveteria extends JFrame {
             }
 
             JOptionPane.showMessageDialog(this,
-                "Cadastro realizado! Bem-vindo, " + nome + "! 😊",
+                "Cadastro realizado! Bem-vinde, " + nome + "! 😊",
                 "Novo Usuário", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this,
                 "Olá de novo, " + usuarioLogado.getNome() + "! 😊\nJá te conheço! Preferência: " + usuarioLogado.getGostoFavorito(),
-                "Bem-vindo de volta!", JOptionPane.INFORMATION_MESSAGE);
+                "Bem-vinde de volta!", JOptionPane.INFORMATION_MESSAGE);
         }
 
         montarInterfaceVendas();
