@@ -4,14 +4,15 @@ import java.util.List;
 
 public class SistemaSorveteria extends JFrame {
 
-    private SorveteriaDAO dao;
+    private SorveteriaFloquinho dao;
     private Usuario usuarioLogado;
-    private DefaultListModel<Produto> listModel;
-    private JList<Produto> listaProdutos;
+    private JPanel painelCardapio;
+    private JLabel lblRecomendacao;
+    private Produto produtoSelecionado = null;
 
     public SistemaSorveteria() {
-        dao = new SorveteriaDAO();
-        setTitle("Sorveteria Inteligente 🍦");
+        dao = new SorveteriaFloquinho();
+        setTitle("Sorveteria Floquinho 🍦");
         setSize(480, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -21,25 +22,16 @@ public class SistemaSorveteria extends JFrame {
     }
 
     private void iniciarFluxoLogin() {
-        // Pede o nome do usuário
-        String nome = JOptionPane.showInputDialog(this, "Bem-vindo à Sorveteria! 🍦\nQual o seu nome?", "Login", JOptionPane.QUESTION_MESSAGE);
+        String nome = JOptionPane.showInputDialog(this, "Bem-vindo à Sorveteria Floquinho! 🍦\nQual o seu nome?", "Login", JOptionPane.QUESTION_MESSAGE);
 
-        // BUG CORRIGIDO: trim() antes de checar isEmpty() para evitar nomes só com espaços
         if (nome == null || nome.trim().isEmpty()) {
             System.exit(0);
         }
         nome = nome.trim();
 
-        // Primeira tentativa: busca o usuário sem passar gosto (pode ser que já exista)
         usuarioLogado = dao.identificarUsuario(nome, null);
 
-        // BUG CORRIGIDO: No código original, ao receber null o sistema pedia o gosto
-        // mas chamava identificarUsuario(nome, null) de novo (sem gosto), causando loop
-        // ou NullPointerException. Agora o fluxo está correto:
-        // - null significa usuário novo → pede o gosto → cadastra
-        // - objeto Usuario retornado → usuário já existe com gosto salvo
         if (usuarioLogado == null) {
-            // Usuário novo: pergunta qual categoria prefere
             String[] opcoes = {"Tradicional", "Frutas", "Chocolate"};
             int escolha = JOptionPane.showOptionDialog(
                 this,
@@ -52,7 +44,6 @@ public class SistemaSorveteria extends JFrame {
                 opcoes[0]
             );
 
-            // BUG CORRIGIDO: se o usuário fechar a janela, escolha retorna -1
             if (escolha == JOptionPane.CLOSED_OPTION) {
                 System.exit(0);
             }
@@ -61,7 +52,7 @@ public class SistemaSorveteria extends JFrame {
 
             if (usuarioLogado == null) {
                 JOptionPane.showMessageDialog(this,
-                    "Erro ao conectar ao banco de dados.\nVerifique as configurações em SorveteriaDAO.java",
+                    "Erro ao conectar ao banco de dados.\nVerifique as configurações em SorveteriaFloquinho.java",
                     "Erro de Conexão", JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }
@@ -79,22 +70,21 @@ public class SistemaSorveteria extends JFrame {
     }
 
     private void montarInterfaceVendas() {
-        // === PAINEL SUPERIOR - Informações do Cliente ===
         JPanel painelSuperior = new JPanel(new GridLayout(2, 1, 0, 2));
         painelSuperior.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
-        painelSuperior.setBackground(new Color(255, 220, 100)); // Amarelo sorvete
+        painelSuperior.setBackground(new Color(255, 220, 100));
 
         JLabel lblCliente = new JLabel("👤 Cliente: " + usuarioLogado.getNome(), JLabel.LEFT);
         lblCliente.setFont(new Font("Arial", Font.BOLD, 13));
 
         JLabel lblGosto = new JLabel("⭐ Recomendado para você: " + usuarioLogado.getGostoFavorito(), JLabel.LEFT);
+        lblRecomendacao = lblGosto;
         lblGosto.setFont(new Font("Arial", Font.PLAIN, 12));
 
         painelSuperior.add(lblCliente);
         painelSuperior.add(lblGosto);
         add(painelSuperior, BorderLayout.NORTH);
 
-        // === PAINEL CENTRAL - Lista de Produtos ===
         JPanel painelCentro = new JPanel(new BorderLayout());
 
         JLabel lblTitulo = new JLabel("🍦 Cardápio personalizado para você:", JLabel.CENTER);
@@ -102,41 +92,16 @@ public class SistemaSorveteria extends JFrame {
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(6, 0, 4, 0));
         painelCentro.add(lblTitulo, BorderLayout.NORTH);
 
-        listModel = new DefaultListModel<>();
-        List<Produto> menu = dao.buscarMenuPersonalizado(usuarioLogado.getGostoFavorito());
-        for (Produto p : menu) {
-            listModel.addElement(p);
-        }
+        painelCardapio = new JPanel();
+        painelCardapio.setLayout(new BoxLayout(painelCardapio, BoxLayout.Y_AXIS));
 
-        listaProdutos = new JList<>(listModel);
-        listaProdutos.setFont(new Font("Monospaced", Font.PLAIN, 13));
-        listaProdutos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listaProdutos.setFixedCellHeight(28);
+        preencherCardapio(dao.buscarMenuPersonalizado(usuarioLogado.getGostoFavorito()));
 
-        // MELHORIA: Destaca visualmente os produtos da categoria favorita do usuário
-        listaProdutos.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value,
-                    int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Produto) {
-                    Produto p = (Produto) value;
-                    if (p.getCategoria().equals(usuarioLogado.getGostoFavorito())) {
-                        // Cor de fundo para a categoria favorita
-                        if (!isSelected) {
-                            setBackground(new Color(220, 255, 220)); // Verde claro = favorito
-                        }
-                        setText("⭐ " + p.toString()); // Adiciona estrela nos favoritos
-                    }
-                }
-                return this;
-            }
-        });
-
-        painelCentro.add(new JScrollPane(listaProdutos), BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(painelCardapio);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        painelCentro.add(scroll, BorderLayout.CENTER);
         add(painelCentro, BorderLayout.CENTER);
 
-        // === PAINEL INFERIOR - Botões ===
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 8));
 
         JButton btnComprar = new JButton("🛒 Realizar Pedido");
@@ -144,7 +109,6 @@ public class SistemaSorveteria extends JFrame {
         btnComprar.setBackground(new Color(100, 200, 100));
         btnComprar.addActionListener(e -> realizarPedido());
 
-        // MELHORIA: Botão de histórico de compras
         JButton btnHistorico = new JButton("📋 Meu Histórico");
         btnHistorico.setFont(new Font("Arial", Font.PLAIN, 13));
         btnHistorico.addActionListener(e -> verHistorico());
@@ -157,10 +121,6 @@ public class SistemaSorveteria extends JFrame {
     }
 
     private void realizarPedido() {
-        Produto produtoSelecionado = listaProdutos.getSelectedValue();
-
-        // BUG CORRIGIDO: O código original não avisava o usuário se nada fosse selecionado.
-        // Agora exibe uma mensagem amigável.
         if (produtoSelecionado == null) {
             JOptionPane.showMessageDialog(this,
                 "Por favor, selecione um produto na lista primeiro!",
@@ -174,13 +134,119 @@ public class SistemaSorveteria extends JFrame {
 
         if (confirmacao == JOptionPane.YES_OPTION) {
             dao.registrarVenda(usuarioLogado.getId(), produtoSelecionado.getId());
-            JOptionPane.showMessageDialog(this,
-                "✅ Pedido de " + produtoSelecionado.getNome() + " registrado!\nBom apetite! 😋",
-                "Pedido Confirmado", JOptionPane.INFORMATION_MESSAGE);
+
+            String categoriaAtualizada = dao.calcularCategoriaFavorita(usuarioLogado.getId());
+            if (categoriaAtualizada == null) {
+                categoriaAtualizada = usuarioLogado.getGostoFavorito();
+            }
+
+            boolean recomendacaoMudou = !categoriaAtualizada.equals(usuarioLogado.getGostoFavorito());
+
+            usuarioLogado = new Usuario(
+                usuarioLogado.getId(),
+                usuarioLogado.getNome(),
+                categoriaAtualizada
+            );
+
+            produtoSelecionado = null;
+            atualizarCardapio();
+
+            String mensagem = "✅ Pedido registrado!\nBom apetite! 😋";
+            if (recomendacaoMudou) {
+                mensagem += "\n\n🔄 Sua recomendação foi atualizada para: " + categoriaAtualizada;
+            }
+
+            JOptionPane.showMessageDialog(this, mensagem, "Pedido Confirmado", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
-    // MELHORIA: Método novo para mostrar o histórico de compras
+    private void preencherCardapio(List<Produto> produtos) {
+        painelCardapio.removeAll();
+
+        String categoriaFavorita = usuarioLogado.getGostoFavorito();
+
+        painelCardapio.add(criarCabecalhoSecao("⭐  Recomendações  —  " + categoriaFavorita));
+
+        for (Produto p : produtos) {
+            if (p.getCategoria().equals(categoriaFavorita)) {
+                painelCardapio.add(criarLinhaProduto(p));
+            }
+        }
+
+        painelCardapio.add(criarCabecalhoSecao("Outros"));
+
+        String categoriaAtual = "";
+        for (Produto p : produtos) {
+            if (!p.getCategoria().equals(categoriaFavorita)) {
+                if (!p.getCategoria().equals(categoriaAtual)) {
+                    categoriaAtual = p.getCategoria();
+                    painelCardapio.add(criarSubtituloCategoria(categoriaAtual));
+                }
+                painelCardapio.add(criarLinhaProduto(p));
+            }
+        }
+
+        painelCardapio.revalidate();
+        painelCardapio.repaint();
+    }
+
+    private JLabel criarCabecalhoSecao(String texto) {
+        JLabel label = new JLabel("  " + texto);
+        label.setFont(new Font("Arial", Font.BOLD, 12));
+        label.setForeground(Color.WHITE);
+        label.setBackground(new Color(80, 120, 200));
+        label.setOpaque(true);
+        label.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
+        label.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        return label;
+    }
+
+    private JLabel criarSubtituloCategoria(String categoria) {
+        JLabel label = new JLabel("    " + categoria);
+        label.setFont(new Font("Arial", Font.ITALIC, 11));
+        label.setForeground(new Color(100, 100, 100));
+        label.setBackground(new Color(240, 240, 240));
+        label.setOpaque(true);
+        label.setBorder(BorderFactory.createEmptyBorder(3, 8, 3, 8));
+        label.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        return label;
+    }
+
+    private JPanel criarLinhaProduto(Produto p) {
+        JPanel linha = new JPanel(new BorderLayout());
+        linha.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(220, 220, 220)));
+        linha.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
+        linha.setBackground(Color.WHITE);
+
+        JLabel lblNome = new JLabel("   " + p.getNome());
+        lblNome.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        JLabel lblPreco = new JLabel(String.format("R$ %.2f   ", p.getPreco()).replace(".", ","));
+        lblPreco.setFont(new Font("Arial", Font.BOLD, 13));
+        lblPreco.setForeground(new Color(40, 140, 40));
+
+        linha.add(lblNome, BorderLayout.CENTER);
+        linha.add(lblPreco, BorderLayout.EAST);
+
+        linha.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                for (Component c : painelCardapio.getComponents()) {
+                    if (c instanceof JPanel) c.setBackground(Color.WHITE);
+                }
+                linha.setBackground(new Color(200, 220, 255));
+                produtoSelecionado = p;
+            }
+        });
+
+        return linha;
+    }
+
+    private void atualizarCardapio() {
+        lblRecomendacao.setText("⭐ Recomendado para você: " + usuarioLogado.getGostoFavorito());
+        preencherCardapio(dao.buscarMenuPersonalizado(usuarioLogado.getGostoFavorito()));
+    }
+
     private void verHistorico() {
         List<String> historico = dao.buscarHistoricoUsuario(usuarioLogado.getId());
 
@@ -207,7 +273,6 @@ public class SistemaSorveteria extends JFrame {
     }
 
     public static void main(String[] args) {
-        // Garante que a interface roda na thread correta (boa prática Swing)
         SwingUtilities.invokeLater(() -> new SistemaSorveteria());
     }
 }
