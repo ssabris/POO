@@ -1,4 +1,4 @@
-# 🍦 Sorveteria Floquinho
+# 🍦 Sorveteria Floquinho 
 
 Sistema de vendas da Sorveteria Floquinho desenvolvido em **Java** com interface gráfica **Swing** e integração com banco de dados **MySQL**. O sistema identifica o cliente e personaliza o cardápio automaticamente com base no histórico de compras de cada usuário.
 
@@ -89,7 +89,7 @@ O banco de dados e todas as tabelas são criados automaticamente na primeira exe
 
 ---
 
-## 🧠 Algoritmo de Recomendação
+## ❄️ Algoritmo de Recomendação
 
 A cada compra realizada, o sistema executa a seguinte consulta para determinar a categoria favorita atualizada do cliente:
 
