@@ -2,21 +2,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SorveteriaDAO {
-    // AJUSTE: Adicione suas credenciais do MySQL aqui
-    private final String URL      = "jdbc:mysql://localhost:3306/";
-    private final String DB_NAME  = "sorveteria_db";
-    private final String USER     = "root"; // Altere se necessário
-    private final String PASS     = "root"; // Altere se necessário
+public class SorveteriaFloquinho {
+    private final String URL     = "jdbc:mysql://localhost:3306/";
+    private final String DB_NAME = "sorveteria_floquinho";
+    private final String USER    = "root";
+    private final String PASS    = "1234";
 
     public SorveteriaDAO() {
         inicializarBanco();
     }
 
-    // BUG CORRIGIDO: A URL agora usa parâmetro correto para criar o banco caso não exista.
-    // O parâmetro "createDatabaseIfNotExist=true" é exclusivo do conector MySQL/J.
-    // Adicionamos também "serverTimezone=America/Sao_Paulo" para evitar erros de fuso horário
-    // que são comuns no MySQL 8+.
     private Connection conectar() throws SQLException {
         String urlCompleta = URL + DB_NAME
                 + "?createDatabaseIfNotExist=true"
@@ -27,9 +22,6 @@ public class SorveteriaDAO {
     }
 
     private void inicializarBanco() {
-        // BUG CORRIGIDO: O código original chamava conectar() que já exigia o banco existir
-        // para criar as tabelas. Conectamos primeiro ao servidor sem especificar o banco,
-        // criamos o banco manualmente, e depois conectamos normalmente.
         String urlServidor = URL + "?serverTimezone=America/Sao_Paulo&useSSL=false&allowPublicKeyRetrieval=true";
 
         try (Connection connServidor = DriverManager.getConnection(urlServidor, USER, PASS);
@@ -43,7 +35,6 @@ public class SorveteriaDAO {
             return;
         }
 
-        // Agora que o banco existe, conecta nele para criar as tabelas
         try (Connection conn = conectar(); Statement stmt = conn.createStatement()) {
 
             stmt.execute(
@@ -68,13 +59,12 @@ public class SorveteriaDAO {
                 "  id INT AUTO_INCREMENT PRIMARY KEY," +
                 "  usuario_id INT NOT NULL," +
                 "  produto_id INT NOT NULL," +
-                "  data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +  // MELHORIA: guarda a hora da venda
+                "  data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
                 "  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)," +
                 "  FOREIGN KEY (produto_id) REFERENCES produtos(id)" +
                 ")"
             );
 
-            // Só insere os produtos se a tabela estiver vazia
             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM produtos");
             rs.next();
             if (rs.getInt(1) == 0) {
@@ -85,7 +75,7 @@ public class SorveteriaDAO {
                     "('Milkshake de Chocolate', 'Chocolate', 15.00)," +
                     "('Picolé de Limão', 'Frutas', 4.00)," +
                     "('Taça Trufada', 'Chocolate', 20.00)," +
-                    "('Casquinha de Morango', 'Frutas', 6.00)," +    // MELHORIA: mais produtos
+                    "('Casquinha de Morango', 'Frutas', 6.00)," +
                     "('Sorvete de Creme', 'Tradicional', 7.00)," +
                     "('Brownie com Sorvete', 'Chocolate', 18.00)"
                 );
@@ -98,17 +88,9 @@ public class SorveteriaDAO {
         }
     }
 
-    /**
-     * Busca o usuário pelo nome no banco. Se não existir, cadastra com o gosto informado.
-     * BUG CORRIGIDO: O código original passava null como gostoSeNovo e depois tentava
-     * fazer INSERT com null, o que causaria erro de constraint NOT NULL.
-     * Agora o método retorna null apenas se o usuário foi encontrado mas sem gosto (impossível
-     * com a nova tabela), ou se houve erro de SQL.
-     */
     public Usuario identificarUsuario(String nome, String gostoSeNovo) {
         try (Connection conn = conectar()) {
 
-            // Tenta achar o usuário pelo nome
             PreparedStatement psBusca = conn.prepareStatement(
                 "SELECT * FROM usuarios WHERE nome = ?"
             );
@@ -116,16 +98,14 @@ public class SorveteriaDAO {
             ResultSet rs = psBusca.executeQuery();
 
             if (rs.next()) {
-                // Usuário já existe — retorna com os dados do banco
                 return new Usuario(
                     rs.getInt("id"),
                     rs.getString("nome"),
                     rs.getString("gosto_favorito")
                 );
             } else {
-                // Usuário novo — precisa do gosto para cadastrar
                 if (gostoSeNovo == null || gostoSeNovo.isEmpty()) {
-                    return null; // Sinaliza que o usuário é novo e ainda não tem gosto
+                    return null;
                 }
 
                 PreparedStatement psInsere = conn.prepareStatement(
@@ -148,16 +128,9 @@ public class SorveteriaDAO {
         }
     }
 
-    /**
-     * Retorna os produtos ordenados: primeiro os da categoria favorita do usuário,
-     * depois os demais em ordem alfabética.
-     * MELHORIA: Consulta mais clara e robusta.
-     */
     public List<Produto> buscarMenuPersonalizado(String gostoFavorito) {
         List<Produto> produtos = new ArrayList<>();
-
-        // Ordena: categoria favorita vem primeiro (DESC = 1 antes de 0), resto é alfabético
-        String sql = "SELECT * FROM produtos ORDER BY (categoria = ?) DESC, nome ASC";
+        String sql = "SELECT * FROM produtos ORDER BY (categoria = ?) DESC, categoria ASC, nome ASC";
 
         try (Connection conn = conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -182,9 +155,6 @@ public class SorveteriaDAO {
         return produtos;
     }
 
-    /**
-     * Registra uma venda no banco.
-     */
     public void registrarVenda(int usuarioId, int produtoId) {
         try (Connection conn = conectar();
              PreparedStatement ps = conn.prepareStatement(
@@ -198,10 +168,59 @@ public class SorveteriaDAO {
         } catch (SQLException e) {
             System.err.println("ERRO ao registrar venda: " + e.getMessage());
             e.printStackTrace();
+            return;
+        }
+
+        String novaCategoria = calcularCategoriaFavorita(usuarioId);
+        if (novaCategoria != null) {
+            atualizarGostoFavorito(usuarioId, novaCategoria);
         }
     }
 
-    // MELHORIA: Método novo que busca o histórico de compras do usuário
+    public String calcularCategoriaFavorita(int usuarioId) {
+        String sql =
+            "SELECT p.categoria, COUNT(*) AS total " +
+            "FROM vendas v " +
+            "JOIN produtos p ON v.produto_id = p.id " +
+            "WHERE v.usuario_id = ? " +
+            "GROUP BY p.categoria " +
+            "ORDER BY total DESC " +
+            "LIMIT 1";
+
+        try (Connection conn = conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, usuarioId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("categoria");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("ERRO ao calcular categoria favorita: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private void atualizarGostoFavorito(int usuarioId, String novaCategoria) {
+        try (Connection conn = conectar();
+             PreparedStatement ps = conn.prepareStatement(
+                 "UPDATE usuarios SET gosto_favorito = ? WHERE id = ?"
+             )) {
+
+            ps.setString(1, novaCategoria);
+            ps.setInt(2, usuarioId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("ERRO ao atualizar gosto favorito: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public List<String> buscarHistoricoUsuario(int usuarioId) {
         List<String> historico = new ArrayList<>();
         String sql =
