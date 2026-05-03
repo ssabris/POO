@@ -1,19 +1,20 @@
-# 🍦 Sorveteria Inteligente
+# 🍦 Sorveteria Floquinho
 
-Sistema de vendas de uma loja de sorvetes desenvolvido em **Java** com interface gráfica **Swing** e integração com banco de dados **MySQL**. O sistema identifica o usuário e personaliza o cardápio de acordo com o gosto favorito cadastrado.
+Sistema de vendas da Sorveteria Floquinho desenvolvido em **Java** com interface gráfica **Swing** e integração com banco de dados **MySQL**. O sistema identifica o cliente e personaliza o cardápio automaticamente com base no histórico de compras de cada usuário.
 
-> Trabalho desenvolvido em dupla com **Guilherme Cordovil**  
+> Trabalho desenvolvido em dupla por mim **Sabrina Bernardi** e **Guilherme Cordovil**  
 > Disciplina: Programação Orientada a Objetos
 
 ---
 
 ## 📋 Funcionalidades
 
-- **Login inteligente** — o sistema reconhece usuários que já compraram antes e lembra o gosto favorito deles
-- **Cadastro automático** — novos usuários são cadastrados na primeira visita
-- **Cardápio personalizado** — os produtos da categoria favorita do usuário aparecem destacados no topo
-- **Realizar pedido** — registra a venda no banco com confirmação antes de finalizar
-- **Histórico de compras** — o usuário pode ver todos os pedidos anteriores com data e hora
+- **Login inteligente** — reconhece clientes que já compraram antes e lembra suas preferências
+- **Cadastro automático** — novos clientes são cadastrados na primeira visita escolhendo sua categoria favorita
+- **Cardápio personalizado** — produtos são organizados em seções: "Recomendações" (categoria favorita) e "Outros" (agrupados por categoria)
+- **Algoritmo de recomendação** — após cada compra, o sistema recalcula automaticamente a categoria favorita do cliente com base no histórico de pedidos
+- **Realizar pedido** — selecione um produto e confirme o pedido antes de finalizar
+- **Histórico de compras** — visualize todos os pedidos anteriores com data e hora
 
 ---
 
@@ -21,27 +22,23 @@ Sistema de vendas de uma loja de sorvetes desenvolvido em **Java** com interface
 
 ```
 src/
-├── Usuario.java          → Entidade: representa o cliente
-├── Produto.java          → Entidade: representa os sorvetes do cardápio
-├── SorveteriaDAO.java    → Persistência: toda a lógica SQL e conexão com MySQL
-└── SistemaSorveteria.java → Visão/Controller: interface gráfica Swing
+├── Usuario.java              → Entidade: representa o cliente
+├── Produto.java              → Entidade: representa os sorvetes do cardápio
+├── SorveteriaFloquinho.java  → Persistência: lógica SQL e conexão com MySQL
+└── SistemaSorveteria.java    → Interface gráfica Swing e fluxo do programa
 ```
 
-### Por que essa separação? (Conceito de POO)
+### Separação em camadas (POO)
 
 | Camada | Arquivo | Responsabilidade |
 |---|---|---|
 | **Model (Entidade)** | `Usuario.java`, `Produto.java` | Representam os dados do sistema |
-| **DAO (Persistência)** | `SorveteriaDAO.java` | Acesso ao banco de dados (SQL) |
+| **DAO (Persistência)** | `SorveteriaFloquinho.java` | Acesso ao banco de dados (SQL) |
 | **View/Controller** | `SistemaSorveteria.java` | Interface gráfica e fluxo do programa |
-
-Essa separação facilita a manutenção: se precisar trocar o banco de dados, por exemplo, só mexe no `SorveteriaDAO.java` sem tocar na interface.
 
 ---
 
 ## 🛠️ Pré-requisitos
-
-Antes de rodar o projeto, você precisa ter instalado:
 
 - **Java JDK 11** ou superior
 - **MySQL 8.0** ou superior (rodando localmente)
@@ -49,75 +46,64 @@ Antes de rodar o projeto, você precisa ter instalado:
 
 ---
 
-## ⚙️ Configuração do Banco de Dados
+## ⚙️ Configuração
 
-Você **não precisa criar o banco manualmente**. O sistema cria tudo automaticamente na primeira execução, incluindo:
-
-- Banco de dados `sorveteria_db`
-- Tabelas `usuarios`, `produtos` e `vendas`
-- 8 produtos iniciais no cardápio
-
-Só verifique as credenciais no arquivo `SorveteriaDAO.java`:
+As credenciais do banco ficam no arquivo `SorveteriaFloquinho.java`:
 
 ```java
-private final String USER = "root"; // Seu usuário do MySQL
-private final String PASS = "root"; // Sua senha do MySQL
+private final String DB_NAME = "sorveteria_floquinho";
+private final String USER    = "root";
+private final String PASS    = "root"; // Altere do acordo com seu usuário
 ```
+
+O banco de dados e todas as tabelas são criados automaticamente na primeira execução. Nenhuma configuração manual no MySQL é necessária.
 
 ---
 
 ## ▶️ Como Rodar
 
-1. Abra a pasta do projeto no **VS Code**
-2. Certifique-se de que o `.jar` do MySQL está em **Referenced Libraries**
+1. Abra a pasta do projeto no **VS Code** via **File → Open Folder**
+2. Certifique-se de que o `.jar` do MySQL está em **Referenced Libraries** (painel Java Projects)
 3. Abra o arquivo `SistemaSorveteria.java`
 4. Clique em **Run** acima do método `public static void main`
 
-### Adicionando o conector MySQL/J
+### Como adicionar o conector MySQL/J
 
-1. Baixe o conector em: https://dev.mysql.com/downloads/connector/j/
-2. No VS Code, clique em `+` em **Referenced Libraries** (painel Java Projects)
-3. Selecione o arquivo `.jar` baixado
-
----
-
-## 🗄️ Tabelas do Banco de Dados
-
-**usuarios**
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | INT AUTO_INCREMENT | Chave primária |
-| nome | VARCHAR(100) | Nome do cliente |
-| gosto_favorito | VARCHAR(50) | Categoria preferida (Tradicional, Frutas ou Chocolate) |
-
-**produtos**
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | INT AUTO_INCREMENT | Chave primária |
-| nome | VARCHAR(100) | Nome do sorvete |
-| categoria | VARCHAR(50) | Categoria do produto |
-| preco | DECIMAL(5,2) | Preço em reais |
-
-**vendas**
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | INT AUTO_INCREMENT | Chave primária |
-| usuario_id | INT | Referência ao cliente |
-| produto_id | INT | Referência ao produto |
-| data_hora | TIMESTAMP | Data e hora da venda |
+1. Baixe em: https://dev.mysql.com/downloads/connector/j/ → selecione **Platform Independent** → baixe o `.zip`
+2. Extraia e localize o arquivo `mysql-connector-j-x.x.x.jar`
+3. No VS Code, clique no `+` em **Referenced Libraries** e selecione o `.jar`
 
 ---
 
-## 💡 Algoritmo de Personalização
+## 🗄️ Banco de Dados
 
-O sistema usa uma query SQL simples e eficiente para ordenar o cardápio:
+**Nome do banco:** `sorveteria_floquinho`
+
+| Tabela | Descrição |
+|---|---|
+| `usuarios` | Clientes cadastrados com nome e categoria favorita |
+| `produtos` | Cardápio com nome, categoria e preço |
+| `vendas` | Registro de cada pedido com data e hora |
+
+**Categorias disponíveis:** Tradicional, Frutas, Chocolate
+
+---
+
+## 🧠 Algoritmo de Recomendação
+
+A cada compra realizada, o sistema executa a seguinte consulta para determinar a categoria favorita atualizada do cliente:
 
 ```sql
-SELECT * FROM produtos
-ORDER BY (categoria = ?) DESC, nome ASC
+SELECT p.categoria, COUNT(*) AS total
+FROM vendas v
+JOIN produtos p ON v.produto_id = p.id
+WHERE v.usuario_id = ?
+GROUP BY p.categoria
+ORDER BY total DESC
+LIMIT 1
 ```
 
-A expressão `(categoria = ?)` retorna `1` (verdadeiro) quando a categoria bate com o gosto do usuário e `0` quando não bate. Ordenando de forma decrescente (`DESC`), os produtos favoritos aparecem primeiro. O restante é ordenado alfabeticamente.
+A categoria com mais pedidos passa a ser a favorita. O cardápio é reordenado automaticamente na mesma sessão, sem precisar reiniciar o sistema.
 
 ---
 
@@ -125,5 +111,5 @@ A expressão `(categoria = ?)` retorna `1` (verdadeiro) quando a categoria bate 
 
 | Nome | GitHub |
 |---|---|
-| Sabrina Bernardi | [@ssabris]([https://github.com/ssabris])|
-| Guilherme Cordovil | [@guilherme9792]([https://github.com/guilherme9727]) |
+| [Sabrina Bernardi] | [@ssabris](https://github.com/ssabris) |
+| Guilherme Cordovil | [@guilherme9727](https://github.com/guilherme9727) |
