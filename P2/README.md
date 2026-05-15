@@ -1,4 +1,4 @@
-# 📚 Sistema de Controle de Biblioteca (Library Management System)
+# 📖 Sistema de Controle de Biblioteca 
 
 Um sistema completo de gerenciamento de bibliotecas desenvolvido em **Java**, utilizando interface gráfica **Swing** e integração com banco de dados relacional via padrão **DAO**. Este projeto foi construído com forte base em Programação Orientada a Objetos (POO).
 
