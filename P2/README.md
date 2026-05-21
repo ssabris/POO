@@ -1,6 +1,6 @@
 # Sistema de Biblioteca — Projeto P2
 
-Sistema de controle de biblioteca desenvolvido em Java com interface gráfica Swing e integração com banco de dados MySQL via camada DAO.
+[Sistema de controle de biblioteca] (https://github.com/ssabris/POO/blob/main/P2/explicacao-projeto.html) desenvolvido em Java com interface gráfica Swing e integração com banco de dados MySQL via camada DAO.
 
 ---
 
