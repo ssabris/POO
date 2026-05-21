@@ -1,8 +1,8 @@
 # Sistema de Biblioteca — Projeto P2
 
 Sistema de controle de biblioteca desenvolvido em Java com interface gráfica Swing e integração com banco de dados MySQL via camada DAO.
-
 Acesse https://bibliotecasystem.netlify.app/ entender melhor nosso projeto
+
 ---
 
 ## Estrutura do projeto
