@@ -2,7 +2,6 @@
 
 Sistema de controle de biblioteca desenvolvido em Java com interface gráfica Swing e integração com banco de dados MySQL via camada DAO.
 
-<a href="explicacao-projeto.html">Clique aqui para ver a página do projeto </a>
 ---
 
 ## Estrutura do projeto
@@ -142,5 +141,5 @@ reserva      (id, id_leitor FK, id_obra FK, data_reserva)
 
 | Nome | GitHub |
 |---|---|
-| [Sabrina Bernardi] | [@ssabris](https://github.com/ssabris) |
+| Sabrina Bernardi | [@ssabris](https://github.com/ssabris) |
 | Guilherme Cordovil | [@guilherme9727](https://github.com/guilherme9727) |
