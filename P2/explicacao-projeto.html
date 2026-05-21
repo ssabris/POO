@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Biblioteca — P2</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0f11;
+    --bg2: #16181c;
+    --bg3: #1e2128;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8e6df;
+    --muted: #7a7870;
+    --accent: #c8b89a;
+    --accent2: #8fb3a0;
+    --accent3: #a89bc0;
+    --warn: #c4956a;
+    --info: #6a9ec4;
+    --success: #7ab89a;
+    --danger: #c47a6a;
+    --font: 'Fraunces', Georgia, serif;
+    --mono: 'DM Mono', 'Courier New', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 4rem 2rem 3rem;
+    max-width: 860px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .kicker::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--muted);
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 520px;
+  }
+
+  /* ── NAV TABS ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(14,15,17,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .nav-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  .panel { display: none; }
+  .panel.active {
+    display: block;
+    animation: fadeUp .35s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 300;
+    margin-bottom: .4rem;
+    color: var(--text);
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .section-desc {
+    color: var(--muted);
+    font-size: .9rem;
+    margin-bottom: 2.5rem;
+    font-family: var(--mono);
+  }
+
+  /* ── LAYERS ── */
+  .layers { display: flex; flex-direction: column; gap: 0; }
+  .layer {
+    padding: 1.5rem 1.75rem;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    position: relative;
+    transition: background .2s;
+  }
+  .layer:first-child { border-radius: 12px 12px 0 0; }
+  .layer:last-child  { border-radius: 0 0 12px 12px; border-bottom: 1px solid var(--border); }
+  .layer:hover { background: var(--bg2); }
+
+  .layer-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 99px;
+    margin-bottom: .6rem;
+    display: inline-block;
+  }
+  .tag-ui      { background: rgba(200,184,154,.12); color: var(--accent); border: 1px solid rgba(200,184,154,.25); }
+  .tag-dao     { background: rgba(143,179,160,.12); color: var(--accent2); border: 1px solid rgba(143,179,160,.25); }
+  .tag-model   { background: rgba(168,155,192,.12); color: var(--accent3); border: 1px solid rgba(168,155,192,.25); }
+  .tag-db      { background: rgba(122,120,112,.12); color: var(--muted); border: 1px solid rgba(122,120,112,.2); }
+
+  .layer-name { font-size: 1.05rem; font-weight: 500; margin-bottom: .3rem; }
+  .layer-desc { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+
+  .arrow-connector {
+    text-align: center;
+    color: var(--border2);
+    font-size: 1.4rem;
+    line-height: 1;
+    user-select: none;
+    padding: .1rem 0;
+  }
+
+  /* ── FILES ── */
+  .pkg-section { margin-bottom: 2.5rem; }
+  .pkg-header {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .75rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .file-item {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 1rem;
+    padding: .75rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+    transition: background .15s;
+    border-radius: 4px;
+    cursor: default;
+  }
+  .file-item:last-child { border-bottom: none; }
+  .file-item:hover { background: var(--bg2); padding-left: .5rem; }
+
+  .file-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  .file-desc {
+    font-size: .88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .file-desc strong { color: var(--text); font-weight: 500; }
+  .file-desc code {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--bg3);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent3);
+  }
+
+  /* ── OO CONCEPTS ── */
+  .concept-grid { display: grid; gap: 1rem; }
+
+  .concept-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color .2s, transform .2s;
+    cursor: default;
+  }
+  .concept-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+
+  .concept-header { display: flex; align-items: center; gap: .75rem; margin-bottom: .75rem; }
+
+  .concept-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .icon-h { background: rgba(200,184,154,.15); }
+  .icon-p { background: rgba(143,179,160,.15); }
+  .icon-ag { background: rgba(168,155,192,.15); }
+  .icon-as { background: rgba(100,158,196,.15); }
+  .icon-ex { background: rgba(196,117,102,.15); }
+
+  .concept-title-text { font-size: 1rem; font-weight: 500; }
+
+  .concept-body {
+    font-size: .88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+  .concept-body strong { color: var(--text); font-weight: 500; }
+  .concept-body code {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--bg3);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent3);
+  }
+
+  pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+  .c-comment { color: var(--muted); }
+  .c-kw  { color: var(--accent3); }
+  .c-str { color: var(--accent2); }
+  .c-cls { color: var(--accent); }
+
+  /* ── FLOW ── */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+
+  .flow-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 1.25rem;
+    position: relative;
+  }
+  .flow-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 48px;
+    bottom: -24px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .step-num {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    flex-shrink: 0;
+    background: var(--bg2);
+    z-index: 1;
+  }
+
+  .step-body {
+    padding: .75rem 0 2.5rem;
+  }
+  .step-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: .35rem;
+  }
+  .step-desc {
+    font-size: .88rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .step-desc code {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--bg3);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent3);
+  }
+  .step-desc strong { color: var(--text); font-weight: 500; }
+
+  .step-tip {
+    margin-top: .75rem;
+    padding: .75rem 1rem;
+    background: var(--bg3);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── DB SCHEMA ── */
+  .schema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+
+  .table-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .table-card:hover { border-color: var(--border2); }
+
+  .table-header {
+    padding: .6rem 1rem;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .table-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .45rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .table-field:last-child { border-bottom: none; }
+  .field-name { color: var(--text); }
+  .field-type { color: var(--muted); }
+  .badge-pk { background: rgba(200,184,154,.15); color: var(--accent); padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
+  .badge-fk { background: rgba(143,179,160,.12); color: var(--accent2); padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
+  .badge-null { background: rgba(122,120,112,.1); color: var(--muted); padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
+
+  /* ── FOOTER ── */
+  footer {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+
+  @media (max-width: 600px) {
+    .file-item { grid-template-columns: 1fr; gap: .25rem; }
+    header { padding: 2.5rem 1.25rem 2rem; }
+    main { padding: 2rem 1.25rem 4rem; }
+    nav { padding: 0 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Projeto P2 — Programação Orientada a Objetos</div>
+  <h1>Sistema de <em>Biblioteca</em></h1>
+  <p class="subtitle">Arquitetura em 3 camadas com Java Swing, padrão DAO e MySQL. Documentação interativa do projeto.</p>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <button class="tab-btn active" onclick="show('visao', this)">Visão geral</button>
+    <button class="tab-btn" onclick="show('arquivos', this)">Arquivos</button>
+    <button class="tab-btn" onclick="show('oo', this)">Conceitos OO</button>
+    <button class="tab-btn" onclick="show('fluxo', this)">Fluxo de uso</button>
+    <button class="tab-btn" onclick="show('banco', this)">Banco de dados</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- VISÃO GERAL -->
+  <div id="visao" class="panel active">
+    <h2 class="section-title">Como as camadas se <em>comunicam</em></h2>
+    <p class="section-desc">A UI chama o DAO → o DAO acessa o banco → devolve objetos do model. Nunca pula camadas.</p>
+
+    <div class="layers">
+      <div class="layer">
+        <span class="layer-tag tag-ui">package ui</span>
+        <div class="layer-name">Camada de Interface — Swing</div>
+        <div class="layer-desc">Janelas e painéis Swing. Mostra dados ao usuário, coleta entradas via formulários e ComboBoxes, e captura todas as exceções com <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">catch (SQLException)</code>. Nunca acessa o banco diretamente.</div>
+      </div>
+      <div class="arrow-connector">⇅</div>
+      <div class="layer">
+        <span class="layer-tag tag-dao">package dao</span>
+        <div class="layer-name">Camada DAO — Data Access Object</div>
+        <div class="layer-desc">Traduz objetos Java em comandos SQL e vice-versa. Cada método declara <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">throws SQLException</code> para que os erros apareçam na UI. Usa JOINs reais — sem objetos falsos.</div>
+      </div>
+      <div class="arrow-connector">⇅</div>
+      <div class="layer">
+        <span class="layer-tag tag-model">package model</span>
+        <div class="layer-name">Camada Model — Entidades</div>
+        <div class="layer-desc">Classes puras sem lógica de banco. Representam o mundo real: <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Pessoa</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Leitor</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Funcionario</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Obra</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Copia</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Emprestimo</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Reserva</code>.</div>
+      </div>
+      <div class="arrow-connector">⇅</div>
+      <div class="layer">
+        <span class="layer-tag tag-db">MySQL</span>
+        <div class="layer-name">Banco de dados</div>
+        <div class="layer-desc">6 tabelas relacionadas: <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">funcionario</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">leitor</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">obra</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">copia</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">emprestimo</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">reserva</code>. Script completo em <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">sql/banco.sql</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARQUIVOS -->
+  <div id="arquivos" class="panel">
+    <h2 class="section-title">Todos os <em>arquivos</em></h2>
+    <p class="section-desc">Cada classe em seu próprio .java — Java não permite duas classes public no mesmo arquivo.</p>
+
+    <div class="pkg-section">
+      <div class="pkg-header">model — entidades do sistema</div>
+      <div class="file-item">
+        <div class="file-name">Pessoa.java</div>
+        <div class="file-desc">Classe <strong>abstrata</strong>. Define <code>getIdentificacao()</code> como método abstrato — força todas as subclasses a implementarem.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">Leitor.java</div>
+        <div class="file-desc">Herda de <code>Pessoa</code>. Adiciona <code>matricula</code>. Implementa <code>getIdentificacao()</code> retornando "Leitor | Matrícula: ..."</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">Funcionario.java</div>
+        <div class="file-desc">Herda de <code>Pessoa</code>. Adiciona <code>cargo</code>. Implementa <code>getIdentificacao()</code> retornando "Funcionário | Cargo: ..."</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">Obra.java</div>
+        <div class="file-desc">Entidade independente com <code>id</code>, <code>titulo</code> e <code>autor</code>.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">Copia.java</div>
+        <div class="file-desc"><strong>Agregação</strong> com <code>Obra</code> — uma cópia não existe sem uma obra, mas a obra existe de forma independente.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">Emprestimo.java</div>
+        <div class="file-desc"><strong>Associação</strong> entre <code>Leitor</code>, <code>Copia</code> e <code>Funcionario</code>. Tem <code>dataDevolucao</code> que fica <code>null</code> enquanto o livro não volta.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">Reserva.java</div>
+        <div class="file-desc"><strong>Associação</strong> entre <code>Leitor</code> e <code>Obra</code>. Tem todos os getters implementados.</div>
+      </div>
+    </div>
+
+    <div class="pkg-section">
+      <div class="pkg-header">dao — acesso ao banco</div>
+      <div class="file-item">
+        <div class="file-name">ConexaoDAO.java</div>
+        <div class="file-desc">Centraliza <code>URL</code>, <code>USER</code> e <code>PASS</code>. <strong>Único lugar para alterar credenciais.</strong> Todos os outros DAOs chamam este.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">LeitorDAO.java</div>
+        <div class="file-desc"><code>salvar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">FuncionarioDAO.java</div>
+        <div class="file-desc"><code>salvar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">ObraDAO.java</div>
+        <div class="file-desc"><code>salvar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">CopiaDAO.java</div>
+        <div class="file-desc"><code>salvar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>. Usa JOIN com <code>obra</code> — sem criar objetos falsos <code>new Obra(0,"","")</code>.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">EmprestimoDAO.java</div>
+        <div class="file-desc"><code>registrar</code>, <code>listarTodos</code>, <code>listarEmAberto</code>, <code>registrarDevolucao</code>. JOIN completo com 4 tabelas.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">ReservaDAO.java</div>
+        <div class="file-desc"><code>registrar</code>, <code>listarTodos</code>, <code>excluir</code>.</div>
+      </div>
+    </div>
+
+    <div class="pkg-section">
+      <div class="pkg-header">ui — interface gráfica swing</div>
+      <div class="file-item">
+        <div class="file-name">Main.java</div>
+        <div class="file-desc">Ponto de entrada. Abre a <code>TelaPrincipal</code> dentro do EDT do Swing via <code>SwingUtilities.invokeLater</code>.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">TelaPrincipal.java</div>
+        <div class="file-desc"><code>JFrame</code> com <code>JTabbedPane</code>. Cada aba instancia um painel separado.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">PainelLeitor.java</div>
+        <div class="file-desc">Formulário + <code>JTable</code>. Mostra <code>getIdentificacao()</code> na coluna — polimorfismo visível na UI.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">PainelFuncionario.java</div>
+        <div class="file-desc">Mesmo padrão do PainelLeitor, com campo <code>cargo</code>.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">PainelObra.java</div>
+        <div class="file-desc">Formulário + tabela de obras cadastradas.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">PainelCopia.java</div>
+        <div class="file-desc">Formulário com <code>JComboBox</code> de obras carregado do banco. Sem IDs digitados manualmente.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">PainelEmprestimo.java</div>
+        <div class="file-desc">3 ComboBoxes (Leitor, Cópia, Funcionário) carregados do banco. Registra e lista todos os empréstimos.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">PainelDevolucao.java</div>
+        <div class="file-desc">Lista só empréstimos em aberto (<code>data_devolucao IS NULL</code>). Botão registra a devolução com a data de hoje.</div>
+      </div>
+      <div class="file-item">
+        <div class="file-name">PainelReserva.java</div>
+        <div class="file-desc">2 ComboBoxes (Leitor, Obra). Registra e cancela reservas.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCEITOS OO -->
+  <div id="oo" class="panel">
+    <h2 class="section-title">Conceitos de <em>OO</em> aplicados</h2>
+    <p class="section-desc">Os 4 pilares exigidos pelo enunciado — com onde aparecem no código.</p>
+
+    <div class="concept-grid">
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-icon icon-h">🧬</div>
+          <div class="concept-title-text">Herança</div>
+        </div>
+        <div class="concept-body">
+          <code>Leitor</code> e <code>Funcionario</code> herdam de <code>Pessoa</code> com <code>extends</code>. Ganham <code>id</code>, <code>nome</code> e todos os getters sem repetir código. A classe <strong>Pessoa é abstrata</strong> — não pode ser instanciada diretamente.
+        </div>
+        <pre><span class="c-kw">public class</span> <span class="c-cls">Leitor</span> <span class="c-kw">extends</span> <span class="c-cls">Pessoa</span> {
+  <span class="c-comment">// herda: id, nome, getId(), getNome()</span>
+  <span class="c-kw">private</span> String matricula; <span class="c-comment">// atributo próprio</span>
+}</pre>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-icon icon-p">🔀</div>
+          <div class="concept-title-text">Polimorfismo</div>
+        </div>
+        <div class="concept-body">
+          <code>getIdentificacao()</code> é <strong>abstrato em Pessoa</strong> e implementado diferente em cada subclasse. O mesmo método, chamado sobre um <code>Leitor</code> ou um <code>Funcionario</code>, produz respostas distintas — visível na coluna "Identificação" da JTable.
+        </div>
+        <pre><span class="c-comment">// Leitor.getIdentificacao() retorna:</span>
+<span class="c-str">"Leitor | Matrícula: MAT-001"</span>
+
+<span class="c-comment">// Funcionario.getIdentificacao() retorna:</span>
+<span class="c-str">"Funcionário | Cargo: Bibliotecário"</span></pre>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-icon icon-ag">🔗</div>
+          <div class="concept-title-text">Agregação</div>
+        </div>
+        <div class="concept-body">
+          <code>Copia</code> agrega <code>Obra</code>: uma cópia <strong>não pode existir sem uma obra</strong>, mas a obra existe independentemente. No banco isso vira FK NOT NULL. No DAO, um JOIN traz a obra junto — sem criar <code>new Obra(0,"","")</code>.
+        </div>
+        <pre><span class="c-kw">public class</span> <span class="c-cls">Copia</span> {
+  <span class="c-kw">private</span> <span class="c-cls">Obra</span> obra; <span class="c-comment">// AGREGAÇÃO</span>
+  <span class="c-comment">// Copia depende de Obra para existir</span>
+}</pre>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-icon icon-as">↔️</div>
+          <div class="concept-title-text">Associação</div>
+        </div>
+        <div class="concept-body">
+          <code>Emprestimo</code> associa <code>Leitor</code>, <code>Copia</code> e <code>Funcionario</code>: todos existem de forma independente e se relacionam nesse contexto. O mesmo vale para <code>Reserva</code> com <code>Leitor</code> e <code>Obra</code>.
+        </div>
+        <pre><span class="c-kw">public class</span> <span class="c-cls">Emprestimo</span> {
+  <span class="c-kw">private</span> <span class="c-cls">Leitor</span>      leitor;    <span class="c-comment">// ASSOCIAÇÃO</span>
+  <span class="c-kw">private</span> <span class="c-cls">Copia</span>       copia;     <span class="c-comment">// ASSOCIAÇÃO</span>
+  <span class="c-kw">private</span> <span class="c-cls">Funcionario</span> funcionario; <span class="c-comment">// ASSOCIAÇÃO</span>
+}</pre>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-icon icon-ex">⚠️</div>
+          <div class="concept-title-text">Tratamento de exceções na UI</div>
+        </div>
+        <div class="concept-body">
+          Todos os métodos DAO declaram <code>throws SQLException</code>. A UI captura <strong>dois tipos separados</strong>: validação do formulário (<code>IllegalArgumentException</code>) e erro do banco (<code>SQLException</code>), exibindo mensagens distintas com <code>JOptionPane</code> para cada caso.
+        </div>
+        <pre><span class="c-comment">// Aviso amarelo — validação</span>
+} <span class="c-kw">catch</span> (<span class="c-cls">IllegalArgumentException</span> ex) {
+  JOptionPane.showMessageDialog(..., WARNING);
+
+<span class="c-comment">// Erro vermelho — banco de dados</span>
+} <span class="c-kw">catch</span> (<span class="c-cls">SQLException</span> ex) {
+  JOptionPane.showMessageDialog(..., ERROR);
+}</pre>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLUXO -->
+  <div id="fluxo" class="panel">
+    <h2 class="section-title">Fluxo de <em>uso</em></h2>
+    <p class="section-desc">Ordem recomendada para configurar e usar o sistema do zero.</p>
+
+    <div class="flow">
+
+      <div class="flow-step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Execute o banco.sql</div>
+          <div class="step-desc">Rode o script no MySQL Workbench ou via terminal. Ele cria o banco <code>biblioteca</code>, as 6 tabelas e insere dados de exemplo (2 funcionários, 2 leitores, 2 obras, 3 cópias).</div>
+          <div class="step-tip">mysql -u root -p &lt; sql/banco.sql</div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Ajuste ConexaoDAO.java</div>
+          <div class="step-desc">Abra <code>src/dao/ConexaoDAO.java</code> e altere <code>USER</code> e <code>PASS</code> com suas credenciais do MySQL. <strong>Só nesse arquivo</strong> — todos os outros DAOs usam ele.</div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Adicione o conector MySQL</div>
+          <div class="step-desc">Coloque o <code>mysql-connector-j-x.x.x.jar</code> na pasta <code>lib/</code> do projeto e adicione às Referenced Libraries no VSCode (painel JAVA PROJECTS → + ao lado de Referenced Libraries).</div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Rode Main.java</div>
+          <div class="step-desc">Clique no ▶ acima do método <code>main</code>. A janela principal abre com 7 abas. Se der erro de conexão, a mensagem aparece em vermelho — verifique as credenciais.</div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-title">Cadastre na ordem certa</div>
+          <div class="step-desc">Siga a dependência entre entidades: <strong>Funcionários → Leitores → Obras → Cópias</strong>. Cópias dependem de obras existirem no banco. Os dados de exemplo já cobrem isso.</div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">06</div>
+        <div class="step-body">
+          <div class="step-title">Registre um empréstimo</div>
+          <div class="step-desc">Na aba <strong>Empréstimos</strong>, os ComboBoxes carregam Leitor, Cópia e Funcionário diretamente do banco. Selecione e clique em "Registrar Empréstimo".</div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">07</div>
+        <div class="step-body">
+          <div class="step-title">Registre a devolução</div>
+          <div class="step-desc">Na aba <strong>Devoluções</strong>, só aparecem empréstimos em aberto (<code>data_devolucao IS NULL</code>). Selecione na tabela e clique no botão para registrar com a data de hoje.</div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">08</div>
+        <div class="step-body">
+          <div class="step-title">Faça uma reserva</div>
+          <div class="step-desc">Na aba <strong>Reservas</strong>, escolha leitor e obra via ComboBox e registre. Para cancelar, selecione na tabela e clique em "Cancelar Selecionada".</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BANCO -->
+  <div id="banco" class="panel">
+    <h2 class="section-title">Estrutura do <em>banco</em></h2>
+    <p class="section-desc">6 tabelas relacionadas via chaves estrangeiras. Script completo em sql/banco.sql.</p>
+
+    <div class="schema-grid">
+
+      <div class="table-card">
+        <div class="table-header">funcionario</div>
+        <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
+        <div class="table-field"><span class="field-name">nome</span><span class="field-type">VARCHAR(100)</span></div>
+        <div class="table-field"><span class="field-name">cargo</span><span class="field-type">VARCHAR(80)</span></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">leitor</div>
+        <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
+        <div class="table-field"><span class="field-name">nome</span><span class="field-type">VARCHAR(100)</span></div>
+        <div class="table-field"><span class="field-name">matricula</span><span class="field-type">VARCHAR(30) UNIQUE</span></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">obra</div>
+        <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
+        <div class="table-field"><span class="field-name">titulo</span><span class="field-type">VARCHAR(200)</span></div>
+        <div class="table-field"><span class="field-name">autor</span><span class="field-type">VARCHAR(100)</span></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">copia — agregação</div>
+        <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
+        <div class="table-field"><span class="field-name">id_obra<span class="badge-fk">FK</span></span><span class="field-type">→ obra.id</span></div>
+        <div class="table-field"><span class="field-name">codigo_barras</span><span class="field-type">VARCHAR(50) UNIQUE</span></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">emprestimo — associação</div>
+        <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
+        <div class="table-field"><span class="field-name">id_leitor<span class="badge-fk">FK</span></span><span class="field-type">→ leitor.id</span></div>
+        <div class="table-field"><span class="field-name">id_copia<span class="badge-fk">FK</span></span><span class="field-type">→ copia.id</span></div>
+        <div class="table-field"><span class="field-name">id_funcionario<span class="badge-fk">FK</span></span><span class="field-type">→ funcionario.id</span></div>
+        <div class="table-field"><span class="field-name">data_emprestimo</span><span class="field-type">DATE</span></div>
+        <div class="table-field"><span class="field-name">data_devolucao<span class="badge-null">NULL</span></span><span class="field-type">DATE — null = aberto</span></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">reserva — associação</div>
+        <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
+        <div class="table-field"><span class="field-name">id_leitor<span class="badge-fk">FK</span></span><span class="field-type">→ leitor.id</span></div>
+        <div class="table-field"><span class="field-name">id_obra<span class="badge-fk">FK</span></span><span class="field-type">→ obra.id</span></div>
+        <div class="table-field"><span class="field-name">data_reserva</span><span class="field-type">DATE</span></div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>Sistema de Biblioteca — Projeto P2</span>
+  <span>Java · Swing · JDBC · MySQL</span>
+</footer>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
