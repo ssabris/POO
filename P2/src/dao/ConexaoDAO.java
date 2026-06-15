@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * Ajuste URL, USER e PASS conforme seu ambiente local.
  */
 public class ConexaoDAO {
-    private static final String URL  = "jdbc:mysql://localhost:3306/biblioteca?useSSL=false&serverTimezone=UTC";
+    private static final String URL  = "jdbc:mysql://localhost:3306/biblioteca_v2?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
     private static final String PASS = "1234";
 
