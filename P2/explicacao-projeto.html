@@ -803,9 +803,9 @@
   <div id="oo" class="panel">
     <h2 class="section-title">Conceitos de <em>OO</em> aplicados</h2>
     <p class="section-desc">Os pilares exigidos pelo enunciado — com onde aparecem no código.</p>
-
+ 
     <div class="concept-grid">
-
+ 
       <div class="concept-card">
         <div class="concept-header">
           <div class="concept-icon icon-h">🧬</div>
@@ -820,7 +820,7 @@
   <span class="c-kw">private boolean</span> ativo; <span class="c-comment">// Soft Delete</span>
 }</pre>
       </div>
-
+ 
       <div class="concept-card">
         <div class="concept-header">
           <div class="concept-icon icon-p">🔀</div>
@@ -831,11 +831,11 @@
         </div>
         <pre><span class="c-comment">// Leitor.getIdentificacao() retorna:</span>
 <span class="c-str">"Leitor | Matrícula: MAT-001"</span>
-
+ 
 <span class="c-comment">// Funcionario.getIdentificacao() retorna:</span>
 <span class="c-str">"Funcionário | Cargo: Bibliotecário"</span></pre>
       </div>
-
+ 
       <div class="concept-card">
         <div class="concept-header">
           <div class="concept-icon icon-as">↔️</div>
@@ -850,7 +850,7 @@
   <span class="c-kw">private</span> <span class="c-cls">Funcionario</span> funcionario; <span class="c-comment">// ASSOCIAÇÃO</span>
 }</pre>
       </div>
-
+ 
       <div class="concept-card">
         <div class="concept-header">
           <div class="concept-icon icon-ex">⚠️</div>
@@ -862,17 +862,17 @@
         <pre><span class="c-comment">// Aviso — validação de formulário</span>
 } <span class="c-kw">catch</span> (<span class="c-cls">IllegalArgumentException</span> ex) {
   JOptionPane.showMessageDialog(..., WARNING);
-
+ 
 <span class="c-comment">// Aviso — regra de negócio</span>
 } <span class="c-kw">catch</span> (<span class="c-cls">IllegalStateException</span> ex) {
   JOptionPane.showMessageDialog(..., WARNING);
-
+ 
 <span class="c-comment">// Erro — banco de dados</span>
 } <span class="c-kw">catch</span> (<span class="c-cls">SQLException</span> ex) {
   JOptionPane.showMessageDialog(..., ERROR);
 }</pre>
       </div>
-
+ 
       <div class="concept-card">
         <div class="concept-header">
           <div class="concept-icon icon-tr">🔒</div>
@@ -891,17 +891,17 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
   conn.rollback(); <span class="c-kw">throw</span> e;
 }</pre>
       </div>
-
+ 
     </div>
   </div>
-
+ 
   <!-- FLUXO -->
   <div id="fluxo" class="panel">
     <h2 class="section-title">Fluxo de <em>uso</em></h2>
     <p class="section-desc">Ordem recomendada para configurar e usar o sistema do zero.</p>
-
+ 
     <div class="flow">
-
+ 
       <div class="flow-step">
         <div class="step-num">01</div>
         <div class="step-body">
@@ -910,7 +910,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
           <div class="step-tip">mysql -u root -p &lt; sql/banco_v2.sql</div>
         </div>
       </div>
-
+ 
       <div class="flow-step">
         <div class="step-num">02</div>
         <div class="step-body">
@@ -918,7 +918,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
           <div class="step-desc">Abra <code>src/dao/ConexaoDAO.java</code> e altere <code>USER</code> e <code>PASS</code> com suas credenciais do MySQL. <strong>Só nesse arquivo</strong> — todos os outros DAOs usam ele. A URL já aponta para <code>biblioteca_v2</code>.</div>
         </div>
       </div>
-
+ 
       <div class="flow-step">
         <div class="step-num">03</div>
         <div class="step-body">
@@ -926,7 +926,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
           <div class="step-desc">O arquivo <code>mysql-connector-j-9.7.0.jar</code> já está na pasta <code>lib/</code>. Adicione-o às Referenced Libraries no VSCode (painel JAVA PROJECTS → + ao lado de Referenced Libraries) ou equivalente na sua IDE.</div>
         </div>
       </div>
-
+ 
       <div class="flow-step">
         <div class="step-num">04</div>
         <div class="step-body">
@@ -934,7 +934,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
           <div class="step-desc">Clique no ▶ acima do método <code>main</code>. A janela principal abre com <strong>6 abas</strong>. Se der erro de conexão, a mensagem aparece em vermelho — verifique as credenciais.</div>
         </div>
       </div>
-
+ 
       <div class="flow-step">
         <div class="step-num">05</div>
         <div class="step-body">
@@ -942,7 +942,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
           <div class="step-desc">Siga a dependência entre entidades: <strong>Funcionários → Leitores → Obras</strong>. Ao cadastrar uma obra, informe o código de barras e a quantidade de exemplares. Os dados de exemplo já cobrem isso.</div>
         </div>
       </div>
-
+ 
       <div class="flow-step">
         <div class="step-num">06</div>
         <div class="step-body">
@@ -950,7 +950,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
           <div class="step-desc">Na aba <strong>Empréstimos</strong>, os ComboBoxes carregam Leitor, Funcionário e apenas <strong>Obras disponíveis</strong> do banco. Defina o prazo em dias — a data prevista é calculada automaticamente.</div>
         </div>
       </div>
-
+ 
       <div class="flow-step">
         <div class="step-num">07</div>
         <div class="step-body">
@@ -958,7 +958,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
           <div class="step-desc">Na aba <strong>Devoluções</strong>, só aparecem empréstimos em aberto. Empréstimos com prazo vencido são marcados com ⚠. Ao devolver, o estoque da obra é incrementado automaticamente.</div>
         </div>
       </div>
-
+ 
       <div class="flow-step">
         <div class="step-num">08</div>
         <div class="step-body">
@@ -966,17 +966,17 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
           <div class="step-desc">Na aba <strong>Reservas</strong>, escolha leitor e obra via ComboBox e registre. Cada leitor pode ter no máximo <strong>3 reservas ativas</strong>. Para cancelar, selecione na tabela e clique em "Cancelar Selecionada".</div>
         </div>
       </div>
-
+ 
     </div>
   </div>
-
+ 
   <!-- BANCO -->
   <div id="banco" class="panel">
     <h2 class="section-title">Estrutura do <em>banco</em></h2>
     <p class="section-desc">5 tabelas relacionadas via chaves estrangeiras. Script completo em sql/banco_v2.sql.</p>
-
+ 
     <div class="schema-grid">
-
+ 
       <div class="table-card">
         <div class="table-header">funcionario</div>
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
@@ -985,7 +985,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
         <div class="table-field"><span class="field-name">matricula_func<span class="badge-uniq">UNIQUE</span><span class="badge-new">novo</span></span><span class="field-type">VARCHAR(30)</span></div>
         <div class="table-field"><span class="field-name">ativo<span class="badge-new">novo</span></span><span class="field-type">BOOLEAN</span></div>
       </div>
-
+ 
       <div class="table-card">
         <div class="table-header">leitor</div>
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
@@ -993,7 +993,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
         <div class="table-field"><span class="field-name">matricula<span class="badge-uniq">UNIQUE</span></span><span class="field-type">VARCHAR(30)</span></div>
         <div class="table-field"><span class="field-name">ativo<span class="badge-new">novo</span></span><span class="field-type">BOOLEAN</span></div>
       </div>
-
+ 
       <div class="table-card">
         <div class="table-header">obra — unificada com copia</div>
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
@@ -1003,7 +1003,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
         <div class="table-field"><span class="field-name">quantidade_total<span class="badge-new">novo</span></span><span class="field-type">INT</span></div>
         <div class="table-field"><span class="field-name">quantidade_disponivel<span class="badge-new">novo</span></span><span class="field-type">INT</span></div>
       </div>
-
+ 
       <div class="table-card">
         <div class="table-header">emprestimo — associação</div>
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
@@ -1014,7 +1014,7 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
         <div class="table-field"><span class="field-name">data_prevista_devolucao<span class="badge-new">novo</span></span><span class="field-type">DATE</span></div>
         <div class="table-field"><span class="field-name">data_devolucao_real<span class="badge-null">NULL</span></span><span class="field-type">DATE — null = aberto</span></div>
       </div>
-
+ 
       <div class="table-card">
         <div class="table-header">reserva — associação</div>
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
@@ -1022,17 +1022,17 @@ conn.setAutoCommit(<span class="c-kw">false</span>);
         <div class="table-field"><span class="field-name">id_obra<span class="badge-fk">FK</span></span><span class="field-type">→ obra.id</span></div>
         <div class="table-field"><span class="field-name">data_reserva</span><span class="field-type">DATE</span></div>
       </div>
-
+ 
     </div>
   </div>
-
+ 
 </main>
-
+ 
 <footer>
   <span>Sistema de Biblioteca — Projeto P2 · v2</span>
   <span>Java · Swing · JDBC · MySQL</span>
 </footer>
-
+ 
 <script>
   function show(id, btn) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
