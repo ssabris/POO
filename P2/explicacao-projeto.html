@@ -151,6 +151,78 @@
     font-family: var(--mono);
   }
 
+  /* ── CRUD ── */
+  .crud-grid { display: grid; gap: 1.25rem; }
+
+  .crud-card {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color .2s, transform .2s;
+    cursor: default;
+  }
+  .crud-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .crud-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.5rem;
+  }
+  .crud-header.c-create { background: rgba(143,179,160,.1);  border-bottom: 1px solid rgba(143,179,160,.15); }
+  .crud-header.c-read   { background: rgba(106,158,196,.1);  border-bottom: 1px solid rgba(106,158,196,.15); }
+  .crud-header.c-update { background: rgba(200,184,154,.1);  border-bottom: 1px solid rgba(200,184,154,.15); }
+  .crud-header.c-delete { background: rgba(196,117,102,.1);  border-bottom: 1px solid rgba(196,117,102,.15); }
+
+  .crud-letter {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1;
+    width: 42px; height: 42px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .c-create .crud-letter { background: rgba(143,179,160,.2); color: var(--accent2); }
+  .c-read   .crud-letter { background: rgba(106,158,196,.2); color: var(--info); }
+  .c-update .crud-letter { background: rgba(200,184,154,.2); color: var(--accent); }
+  .c-delete .crud-letter { background: rgba(196,117,102,.2); color: var(--danger); }
+
+  .crud-title-group { display: flex; flex-direction: column; gap: .1rem; }
+  .crud-title-main  { font-size: 1rem; font-weight: 500; }
+  .crud-title-sql   { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  .crud-body { background: var(--bg2); padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+
+  .crud-entity {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: .75rem;
+    align-items: start;
+    padding: .6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: .87rem;
+  }
+  .crud-entity:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .entity-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent3);
+    padding-top: 2px;
+  }
+  .entity-desc { color: var(--muted); line-height: 1.6; }
+  .entity-desc strong { color: var(--text); font-weight: 500; }
+  .entity-desc code {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--bg3);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent3);
+  }
+
   /* ── LAYERS ── */
   .layers { display: flex; flex-direction: column; gap: 0; }
   .layer {
@@ -224,6 +296,10 @@
     color: var(--accent);
     padding-top: 2px;
   }
+  .file-name .removed {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
   .file-desc {
     font-size: .88rem;
     color: var(--muted);
@@ -264,11 +340,11 @@
     font-size: 16px;
     flex-shrink: 0;
   }
-  .icon-h { background: rgba(200,184,154,.15); }
-  .icon-p { background: rgba(143,179,160,.15); }
-  .icon-ag { background: rgba(168,155,192,.15); }
+  .icon-h  { background: rgba(200,184,154,.15); }
+  .icon-p  { background: rgba(143,179,160,.15); }
   .icon-as { background: rgba(100,158,196,.15); }
   .icon-ex { background: rgba(196,117,102,.15); }
+  .icon-tr { background: rgba(122,185,154,.15); }
 
   .concept-title-text { font-size: 1rem; font-weight: 500; }
 
@@ -405,10 +481,9 @@
   .table-field:last-child { border-bottom: none; }
   .field-name { color: var(--text); }
   .field-type { color: var(--muted); }
-  .badge-pk { background: rgba(200,184,154,.15); color: var(--accent); padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
-  .badge-fk { background: rgba(143,179,160,.12); color: var(--accent2); padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
-  .badge-null { background: rgba(122,120,112,.1); color: var(--muted); padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
-
+  .badge-pk   { background: rgba(200,184,154,.15); color: var(--accent);  padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
+  .badge-fk   { background: rgba(143,179,160,.12); color: var(--accent2); padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
+  .badge-null { background: rgba(122,120,112,.1);  color: var(--muted);   padding: 1px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
   /* ── FOOTER ── */
   footer {
     max-width: 860px;
@@ -426,6 +501,7 @@
 
   @media (max-width: 600px) {
     .file-item { grid-template-columns: 1fr; gap: .25rem; }
+    .change-item { grid-template-columns: 1fr; }
     header { padding: 2.5rem 1.25rem 2rem; }
     main { padding: 2rem 1.25rem 4rem; }
     nav { padding: 0 1.25rem; }
@@ -443,6 +519,7 @@
 <nav>
   <div class="nav-inner">
     <button class="tab-btn active" onclick="show('visao', this)">Visão geral</button>
+    <button class="tab-btn" onclick="show('crud', this)">CRUD</button>
     <button class="tab-btn" onclick="show('arquivos', this)">Arquivos</button>
     <button class="tab-btn" onclick="show('oo', this)">Conceitos OO</button>
     <button class="tab-btn" onclick="show('fluxo', this)">Fluxo de uso</button>
@@ -461,26 +538,168 @@
       <div class="layer">
         <span class="layer-tag tag-ui">package ui</span>
         <div class="layer-name">Camada de Interface — Swing</div>
-        <div class="layer-desc">Janelas e painéis Swing. Mostra dados ao usuário, coleta entradas via formulários e ComboBoxes, e captura todas as exceções com <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">catch (SQLException)</code>. Nunca acessa o banco diretamente.</div>
+        <div class="layer-desc">Janelas e painéis Swing com filtro em tempo real e edição inline. Captura três tipos de exceção separados: <code>IllegalArgumentException</code> (validação), <code>IllegalStateException</code> (regra de negócio) e <code>SQLException</code> (banco). Nunca acessa o banco diretamente.</div>
       </div>
       <div class="arrow-connector">⇅</div>
       <div class="layer">
         <span class="layer-tag tag-dao">package dao</span>
         <div class="layer-name">Camada DAO — Data Access Object</div>
-        <div class="layer-desc">Traduz objetos Java em comandos SQL e vice-versa. Cada método declara <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">throws SQLException</code> para que os erros apareçam na UI. Usa JOINs reais — sem objetos falsos.</div>
+        <div class="layer-desc">Traduz objetos Java em comandos SQL e vice-versa. Operações críticas (registrar empréstimo, registrar devolução) usam <strong>transações atômicas</strong> que garantem consistência do estoque. Usa JOINs reais — sem objetos falsos.</div>
       </div>
       <div class="arrow-connector">⇅</div>
       <div class="layer">
         <span class="layer-tag tag-model">package model</span>
         <div class="layer-name">Camada Model — Entidades</div>
-        <div class="layer-desc">Classes puras sem lógica de banco. Representam o mundo real: <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Pessoa</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Leitor</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Funcionario</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Obra</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Copia</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Emprestimo</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">Reserva</code>.</div>
+        <div class="layer-desc">Classes puras sem lógica de banco. <code>Obra</code> agora carrega <code>codigoBarras</code>, <code>quantidadeTotal</code> e <code>quantidadeDisponivel</code>. <code>Emprestimo</code> tem 3 datas e métodos <code>isDevolvido()</code> e <code>isAtrasado()</code>.</div>
       </div>
       <div class="arrow-connector">⇅</div>
       <div class="layer">
         <span class="layer-tag tag-db">MySQL</span>
         <div class="layer-name">Banco de dados</div>
-        <div class="layer-desc">6 tabelas relacionadas: <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">funcionario</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">leitor</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">obra</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">copia</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">emprestimo</code>, <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">reserva</code>. Script completo em <code style="font-family:monospace;font-size:11px;background:#1e2128;padding:1px 5px;border-radius:3px">sql/banco.sql</code>.</div>
+        <div class="layer-desc">5 tabelas relacionadas: <code>funcionario</code>, <code>leitor</code>, <code>obra</code>, <code>emprestimo</code>, <code>reserva</code>. Script completo em <code>sql/banco.sql</code>.</div>
       </div>
+    </div>
+  </div>
+
+  <!-- CRUD -->
+  <div id="crud" class="panel">
+    <h2 class="section-title">Operações <em>CRUD</em></h2>
+    <p class="section-desc">As quatro operações fundamentais aplicadas a cada entidade do sistema.</p>
+
+    <div class="crud-grid">
+
+      <!-- CREATE -->
+      <div class="crud-card">
+        <div class="crud-header c-create">
+          <div class="crud-letter">C</div>
+          <div class="crud-title-group">
+            <span class="crud-title-main">Create — Criar</span>
+            <span class="crud-title-sql">INSERT INTO tabela (...) VALUES (...)</span>
+          </div>
+        </div>
+        <div class="crud-body">
+          <div class="crud-entity">
+            <span class="entity-name">Leitor</span>
+            <span class="entity-desc">Formulário com Nome e Matrícula. O DAO executa <code>INSERT INTO leitor (nome, matricula)</code>. Matrícula tem restrição UNIQUE — duplicata exibe aviso específico.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Funcionário</span>
+            <span class="entity-desc">Formulário com Nome, Cargo e Matrícula Func. O campo <code>matricula_func</code> também é UNIQUE no banco. <code>ativo = TRUE</code> é definido por padrão no INSERT.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Obra</span>
+            <span class="entity-desc">Formulário com Título, Autor, Código de Barras e Qtd. Exemplares. O DAO insere <code>quantidade_disponivel = quantidade_total</code> no momento do cadastro.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Empréstimo</span>
+            <span class="entity-desc">Seleção via ComboBox de Leitor, Obra disponível e Funcionário. A <code>data_prevista_devolucao</code> é calculada automaticamente pelo prazo em dias. O INSERT e o decremento do estoque ocorrem em <strong>transação atômica</strong>.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Reserva</span>
+            <span class="entity-desc">Seleção de Leitor e Obra via ComboBox. Antes do INSERT, o DAO verifica se o leitor já possui 3 reservas ativas — se sim, lança <code>IllegalStateException</code>.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- READ -->
+      <div class="crud-card">
+        <div class="crud-header c-read">
+          <div class="crud-letter">R</div>
+          <div class="crud-title-group">
+            <span class="crud-title-main">Read — Ler</span>
+            <span class="crud-title-sql">SELECT ... FROM tabela [WHERE ...]</span>
+          </div>
+        </div>
+        <div class="crud-body">
+          <div class="crud-entity">
+            <span class="entity-name">Leitor</span>
+            <span class="entity-desc"><code>listarTodos()</code> retorna apenas leitores com <code>ativo = 1</code> (Soft Delete). A lista popula tanto a JTable do painel quanto o ComboBox de Empréstimos e Reservas.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Funcionário</span>
+            <span class="entity-desc"><code>listarTodos()</code> filtra por <code>ativo = TRUE</code>. <code>buscarPorId()</code> é usado ao carregar dados para edição inline ao clicar na tabela.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Obra</span>
+            <span class="entity-desc"><code>listarTodos()</code> exibe todas as obras com estoque. <code>listarDisponiveis()</code> filtra <code>WHERE quantidade_disponivel &gt; 0</code> — usado exclusivamente no ComboBox de Empréstimos.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Empréstimo</span>
+            <span class="entity-desc"><code>listarTodos()</code> retorna todos com JOIN em leitor, obra e funcionário. <code>listarEmAberto()</code> adiciona <code>WHERE data_devolucao_real IS NULL</code> — usado na aba Devoluções.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Reserva</span>
+            <span class="entity-desc"><code>listarTodos()</code> retorna todas as reservas ativas com JOIN em leitor e obra, ordenadas por data. A contagem por leitor é verificada antes de cada novo INSERT.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPDATE -->
+      <div class="crud-card">
+        <div class="crud-header c-update">
+          <div class="crud-letter">U</div>
+          <div class="crud-title-group">
+            <span class="crud-title-main">Update — Atualizar</span>
+            <span class="crud-title-sql">UPDATE tabela SET ... WHERE id = ?</span>
+          </div>
+        </div>
+        <div class="crud-body">
+          <div class="crud-entity">
+            <span class="entity-name">Leitor</span>
+            <span class="entity-desc"><code>atualizar()</code> edita Nome e Matrícula. A edição inline é ativada ao clicar em qualquer linha da tabela — o botão "Salvar" muda para "Atualizar" automaticamente.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Funcionário</span>
+            <span class="entity-desc"><code>atualizar()</code> edita Nome, Cargo e Matrícula Func. Mesmo padrão de edição inline. Matrícula duplicada exibe mensagem específica via <code>SQLIntegrityConstraintViolationException</code>.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Obra</span>
+            <span class="entity-desc"><code>atualizar()</code> edita Título, Autor, Código de Barras e Qtd. Total. <code>decrementarDisponivel()</code> e <code>incrementarDisponivel()</code> são chamados pelo EmprestimoDAO na mesma transação do empréstimo ou devolução.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Empréstimo</span>
+            <span class="entity-desc"><code>registrarDevolucao()</code> executa <code>UPDATE emprestimo SET data_devolucao_real = ?</code> e incrementa o estoque da obra em transação única — garantindo que nenhuma devolução fique sem atualizar o estoque.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Reserva</span>
+            <span class="entity-desc">Reservas não possuem edição direta — o fluxo esperado é cancelar e criar uma nova. O status de disponibilidade da obra referenciada é atualizado indiretamente via empréstimos.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELETE -->
+      <div class="crud-card">
+        <div class="crud-header c-delete">
+          <div class="crud-letter">D</div>
+          <div class="crud-title-group">
+            <span class="crud-title-main">Delete — Excluir</span>
+            <span class="crud-title-sql">DELETE / UPDATE ... SET ativo = 0</span>
+          </div>
+        </div>
+        <div class="crud-body">
+          <div class="crud-entity">
+            <span class="entity-name">Leitor</span>
+            <span class="entity-desc"><strong>Soft Delete</strong>: <code>UPDATE leitor SET ativo = 0</code>. Antes de inativar, o DAO verifica se há empréstimos com <code>data_devolucao_real IS NULL</code>. Se houver, lança <code>IllegalStateException</code> e o leitor não é inativado.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Funcionário</span>
+            <span class="entity-desc"><strong>Soft Delete</strong>: <code>UPDATE funcionario SET ativo = FALSE</code>. O registro histórico nos empréstimos anteriores é preservado, pois a FK continua válida no banco.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Obra</span>
+            <span class="entity-desc"><strong>Delete físico</strong>: <code>DELETE FROM obra WHERE id = ?</code>. Exclusão só é possível se não houver empréstimos ou reservas vinculados — o banco lança violação de FK caso contrário.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Empréstimo</span>
+            <span class="entity-desc">Empréstimos não são excluídos — são <strong>encerrados</strong> via devolução (UPDATE em <code>data_devolucao_real</code>). O histórico completo permanece no banco para consulta na aba Empréstimos.</span>
+          </div>
+          <div class="crud-entity">
+            <span class="entity-name">Reserva</span>
+            <span class="entity-desc"><strong>Delete físico</strong>: <code>DELETE FROM reserva WHERE id = ?</code> após confirmação. Chamado pelo botão "Cancelar Selecionada" na aba Reservas, liberando a vaga no limite de 3 por leitor.</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -497,27 +716,23 @@
       </div>
       <div class="file-item">
         <div class="file-name">Leitor.java</div>
-        <div class="file-desc">Herda de <code>Pessoa</code>. Adiciona <code>matricula</code>. Implementa <code>getIdentificacao()</code> retornando "Leitor | Matrícula: ..."</div>
+        <div class="file-desc">Herda de <code>Pessoa</code>. Adiciona <code>matricula</code> e campo <strong>ativo</strong> para Soft Delete. Implementa <code>getIdentificacao()</code> retornando "Leitor | Matrícula: ..."</div>
       </div>
       <div class="file-item">
         <div class="file-name">Funcionario.java</div>
-        <div class="file-desc">Herda de <code>Pessoa</code>. Adiciona <code>cargo</code>. Implementa <code>getIdentificacao()</code> retornando "Funcionário | Cargo: ..."</div>
+        <div class="file-desc">Herda de <code>Pessoa</code>. Adiciona <code>cargo</code>, <strong>matriculaFunc</strong> (UNIQUE) e campo <strong>ativo</strong>. Implementa <code>getIdentificacao()</code> retornando "Funcionário | Cargo: ..."</div>
       </div>
       <div class="file-item">
         <div class="file-name">Obra.java</div>
-        <div class="file-desc">Entidade independente com <code>id</code>, <code>titulo</code> e <code>autor</code>.</div>
-      </div>
-      <div class="file-item">
-        <div class="file-name">Copia.java</div>
-        <div class="file-desc"><strong>Agregação</strong> com <code>Obra</code> — uma cópia não existe sem uma obra, mas a obra existe de forma independente.</div>
+        <div class="file-desc">Entidade com <code>titulo</code>, <code>autor</code>, <strong>codigoBarras</strong>, <strong>quantidadeTotal</strong> e <strong>quantidadeDisponivel</strong>. Método <code>isDisponivel()</code> retorna se há exemplares em estoque.</div>
       </div>
       <div class="file-item">
         <div class="file-name">Emprestimo.java</div>
-        <div class="file-desc"><strong>Associação</strong> entre <code>Leitor</code>, <code>Copia</code> e <code>Funcionario</code>. Tem <code>dataDevolucao</code> que fica <code>null</code> enquanto o livro não volta.</div>
+        <div class="file-desc"><strong>Associação</strong> entre <code>Leitor</code>, <code>Obra</code> e <code>Funcionario</code>. Possui 3 datas: empréstimo, prevista e real. Métodos <code>isDevolvido()</code> e <code>isAtrasado()</code> encapsulam a lógica de status.</div>
       </div>
       <div class="file-item">
         <div class="file-name">Reserva.java</div>
-        <div class="file-desc"><strong>Associação</strong> entre <code>Leitor</code> e <code>Obra</code>. Tem todos os getters implementados.</div>
+        <div class="file-desc"><strong>Associação</strong> entre <code>Leitor</code> e <code>Obra</code>. Armazena a data da reserva e referências aos dois objetos associados.</div>
       </div>
     </div>
 
@@ -529,27 +744,23 @@
       </div>
       <div class="file-item">
         <div class="file-name">LeitorDAO.java</div>
-        <div class="file-desc"><code>salvar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>.</div>
+        <div class="file-desc"><code>salvar</code>, <code>atualizar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>. <code>excluir()</code> faz <strong>Soft Delete</strong> com verificação de empréstimos em aberto antes de inativar.</div>
       </div>
       <div class="file-item">
         <div class="file-name">FuncionarioDAO.java</div>
-        <div class="file-desc"><code>salvar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>.</div>
+        <div class="file-desc"><code>salvar</code>, <code>atualizar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>. Inclui <code>matricula_func</code>. <code>excluir()</code> implementa <strong>Soft Delete</strong>.</div>
       </div>
       <div class="file-item">
         <div class="file-name">ObraDAO.java</div>
-        <div class="file-desc"><code>salvar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>.</div>
-      </div>
-      <div class="file-item">
-        <div class="file-name">CopiaDAO.java</div>
-        <div class="file-desc"><code>salvar</code>, <code>listarTodos</code>, <code>buscarPorId</code>, <code>excluir</code>. Usa JOIN com <code>obra</code> — sem criar objetos falsos <code>new Obra(0,"","")</code>.</div>
+        <div class="file-desc"><code>salvar</code>, <code>atualizar</code>, <code>listarTodos</code>, <code>listarDisponiveis</code>, <code>buscarPorId</code>, <code>excluir</code>, <code>decrementarDisponivel</code>, <code>incrementarDisponivel</code>.</div>
       </div>
       <div class="file-item">
         <div class="file-name">EmprestimoDAO.java</div>
-        <div class="file-desc"><code>registrar</code>, <code>listarTodos</code>, <code>listarEmAberto</code>, <code>registrarDevolucao</code>. JOIN completo com 4 tabelas.</div>
+        <div class="file-desc"><code>registrar</code> (transação: INSERT + decrement de estoque), <code>registrarDevolucao</code> (transação: UPDATE + increment), <code>listarTodos</code>, <code>listarEmAberto</code>. JOIN completo com 3 tabelas.</div>
       </div>
       <div class="file-item">
         <div class="file-name">ReservaDAO.java</div>
-        <div class="file-desc"><code>registrar</code>, <code>listarTodos</code>, <code>excluir</code>.</div>
+        <div class="file-desc"><code>registrar</code> (com limite de 3 reservas por leitor), <code>listarTodos</code>, <code>excluir</code>.</div>
       </div>
     </div>
 
@@ -557,47 +768,41 @@
       <div class="pkg-header">ui — interface gráfica swing</div>
       <div class="file-item">
         <div class="file-name">Main.java</div>
-        <div class="file-desc">Ponto de entrada. Abre a <code>TelaPrincipal</code> dentro do EDT do Swing via <code>SwingUtilities.invokeLater</code>.</div>
+        <div class="file-desc">Ponto de entrada. Abre a <code>TelaPrincipal</code> dentro do EDT do Swing via <code>SwingUtilities.invokeLater</code>. Sem alterações.</div>
       </div>
       <div class="file-item">
         <div class="file-name">TelaPrincipal.java</div>
-        <div class="file-desc"><code>JFrame</code> com <code>JTabbedPane</code>. Cada aba instancia um painel separado.</div>
+        <div class="file-desc"><code>JFrame</code> com <code>JTabbedPane</code>. Passa de 7 para <strong>6 abas</strong> — aba "Cópias" removida.</div>
       </div>
       <div class="file-item">
         <div class="file-name">PainelLeitor.java</div>
-        <div class="file-desc">Formulário + <code>JTable</code>. Mostra <code>getIdentificacao()</code> na coluna — polimorfismo visível na UI.</div>
+        <div class="file-desc">Formulário + <code>JTable</code> com <strong>filtro em tempo real</strong> e <strong>edição inline</strong>. Trata <code>IllegalStateException</code> ao tentar inativar leitor com empréstimo em aberto.</div>
       </div>
       <div class="file-item">
         <div class="file-name">PainelFuncionario.java</div>
-        <div class="file-desc">Mesmo padrão do PainelLeitor, com campo <code>cargo</code>.</div>
+        <div class="file-desc">Mesmo padrão do PainelLeitor. Campo <strong>Matrícula Func.</strong> adicionado. Trata matrícula duplicada com mensagem específica.</div>
       </div>
       <div class="file-item">
         <div class="file-name">PainelObra.java</div>
-        <div class="file-desc">Formulário + tabela de obras cadastradas.</div>
-      </div>
-      <div class="file-item">
-        <div class="file-name">PainelCopia.java</div>
-        <div class="file-desc">Formulário com <code>JComboBox</code> de obras carregado do banco. Sem IDs digitados manualmente.</div>
+        <div class="file-desc">Substitui também o antigo PainelCopia. Campos <strong>Código de Barras</strong> e <strong>Qtd. Exemplares</strong> adicionados. Tabela exibe disponibilidade em tempo real.</div>
       </div>
       <div class="file-item">
         <div class="file-name">PainelEmprestimo.java</div>
-        <div class="file-desc">3 ComboBoxes (Leitor, Cópia, Funcionário) carregados do banco. Registra e lista todos os empréstimos.</div>
+        <div class="file-desc">Campo <strong>Prazo (dias)</strong> calcula data prevista automaticamente. ComboBox de obras filtra apenas disponíveis. Tabela exibe status com indicador ⚠ ATRASADO.</div>
       </div>
       <div class="file-item">
         <div class="file-name">PainelDevolucao.java</div>
-        <div class="file-desc">Lista só empréstimos em aberto (<code>data_devolucao IS NULL</code>). Botão registra a devolução com a data de hoje.</div>
+        <div class="file-desc">Lista empréstimos em aberto. Coluna <strong>Atrasado?</strong> calculada em tempo real. Devolução atualiza o estoque via transação.</div>
       </div>
       <div class="file-item">
         <div class="file-name">PainelReserva.java</div>
-        <div class="file-desc">2 ComboBoxes (Leitor, Obra). Registra e cancela reservas.</div>
+        <div class="file-desc">2 ComboBoxes (Leitor, Obra). Trata <code>IllegalStateException</code> de limite de 3 reservas com mensagem específica.</div>
       </div>
-    </div>
-  </div>
 
   <!-- CONCEITOS OO -->
   <div id="oo" class="panel">
     <h2 class="section-title">Conceitos de <em>OO</em> aplicados</h2>
-    <p class="section-desc">Os 4 pilares exigidos pelo enunciado — com onde aparecem no código.</p>
+    <p class="section-desc">Os pilares exigidos pelo enunciado — com onde aparecem no código.</p>
 
     <div class="concept-grid">
 
@@ -611,7 +816,8 @@
         </div>
         <pre><span class="c-kw">public class</span> <span class="c-cls">Leitor</span> <span class="c-kw">extends</span> <span class="c-cls">Pessoa</span> {
   <span class="c-comment">// herda: id, nome, getId(), getNome()</span>
-  <span class="c-kw">private</span> String matricula; <span class="c-comment">// atributo próprio</span>
+  <span class="c-kw">private</span> String  matricula;
+  <span class="c-kw">private boolean</span> ativo; <span class="c-comment">// Soft Delete</span>
 }</pre>
       </div>
 
@@ -632,29 +838,15 @@
 
       <div class="concept-card">
         <div class="concept-header">
-          <div class="concept-icon icon-ag">🔗</div>
-          <div class="concept-title-text">Agregação</div>
-        </div>
-        <div class="concept-body">
-          <code>Copia</code> agrega <code>Obra</code>: uma cópia <strong>não pode existir sem uma obra</strong>, mas a obra existe independentemente. No banco isso vira FK NOT NULL. No DAO, um JOIN traz a obra junto — sem criar <code>new Obra(0,"","")</code>.
-        </div>
-        <pre><span class="c-kw">public class</span> <span class="c-cls">Copia</span> {
-  <span class="c-kw">private</span> <span class="c-cls">Obra</span> obra; <span class="c-comment">// AGREGAÇÃO</span>
-  <span class="c-comment">// Copia depende de Obra para existir</span>
-}</pre>
-      </div>
-
-      <div class="concept-card">
-        <div class="concept-header">
           <div class="concept-icon icon-as">↔️</div>
           <div class="concept-title-text">Associação</div>
         </div>
         <div class="concept-body">
-          <code>Emprestimo</code> associa <code>Leitor</code>, <code>Copia</code> e <code>Funcionario</code>: todos existem de forma independente e se relacionam nesse contexto. O mesmo vale para <code>Reserva</code> com <code>Leitor</code> e <code>Obra</code>.
+          <code>Emprestimo</code> associa <code>Leitor</code>, <code>Obra</code> e <code>Funcionario</code>: todos existem de forma independente. Na v2 a referência a <code>Copia</code> foi substituída por <code>Obra</code> diretamente. <code>Reserva</code> associa <code>Leitor</code> e <code>Obra</code> da mesma forma.
         </div>
         <pre><span class="c-kw">public class</span> <span class="c-cls">Emprestimo</span> {
-  <span class="c-kw">private</span> <span class="c-cls">Leitor</span>      leitor;    <span class="c-comment">// ASSOCIAÇÃO</span>
-  <span class="c-kw">private</span> <span class="c-cls">Copia</span>       copia;     <span class="c-comment">// ASSOCIAÇÃO</span>
+  <span class="c-kw">private</span> <span class="c-cls">Leitor</span>      leitor;      <span class="c-comment">// ASSOCIAÇÃO</span>
+  <span class="c-kw">private</span> <span class="c-cls">Obra</span>        obra;        <span class="c-comment">// antes: Copia</span>
   <span class="c-kw">private</span> <span class="c-cls">Funcionario</span> funcionario; <span class="c-comment">// ASSOCIAÇÃO</span>
 }</pre>
       </div>
@@ -665,15 +857,38 @@
           <div class="concept-title-text">Tratamento de exceções na UI</div>
         </div>
         <div class="concept-body">
-          Todos os métodos DAO declaram <code>throws SQLException</code>. A UI captura <strong>dois tipos separados</strong>: validação do formulário (<code>IllegalArgumentException</code>) e erro do banco (<code>SQLException</code>), exibindo mensagens distintas com <code>JOptionPane</code> para cada caso.
+          A UI captura <strong>três tipos separados</strong>: validação de formulário (<code>IllegalArgumentException</code>), regras de negócio (<code>IllegalStateException</code> — obra sem estoque, limite de reservas, empréstimo em aberto) e erros do banco (<code>SQLException</code>), exibindo mensagens distintas para cada caso.
         </div>
-        <pre><span class="c-comment">// Aviso amarelo — validação</span>
+        <pre><span class="c-comment">// Aviso — validação de formulário</span>
 } <span class="c-kw">catch</span> (<span class="c-cls">IllegalArgumentException</span> ex) {
   JOptionPane.showMessageDialog(..., WARNING);
 
-<span class="c-comment">// Erro vermelho — banco de dados</span>
+<span class="c-comment">// Aviso — regra de negócio</span>
+} <span class="c-kw">catch</span> (<span class="c-cls">IllegalStateException</span> ex) {
+  JOptionPane.showMessageDialog(..., WARNING);
+
+<span class="c-comment">// Erro — banco de dados</span>
 } <span class="c-kw">catch</span> (<span class="c-cls">SQLException</span> ex) {
   JOptionPane.showMessageDialog(..., ERROR);
+}</pre>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-header">
+          <div class="concept-icon icon-tr">🔒</div>
+          <div class="concept-title-text">Transações atômicas (DAO)</div>
+        </div>
+        <div class="concept-body">
+          Registrar um empréstimo envolve dois comandos: INSERT na tabela <code>emprestimo</code> e UPDATE em <code>quantidade_disponivel</code>. Ambos são executados em uma <strong>transação única</strong> — se um falhar, o outro é revertido com <code>rollback()</code>, garantindo consistência do estoque.
+        </div>
+        <pre><span class="c-comment">// EmprestimoDAO — transação atômica</span>
+conn.setAutoCommit(<span class="c-kw">false</span>);
+<span class="c-kw">try</span> {
+  stmt.executeUpdate(); <span class="c-comment">// INSERT emprestimo</span>
+  obraDAO.decrementarDisponivel(...);
+  conn.commit();
+} <span class="c-kw">catch</span> (SQLException e) {
+  conn.rollback(); <span class="c-kw">throw</span> e;
 }</pre>
       </div>
 
@@ -690,9 +905,9 @@
       <div class="flow-step">
         <div class="step-num">01</div>
         <div class="step-body">
-          <div class="step-title">Execute o banco.sql</div>
-          <div class="step-desc">Rode o script no MySQL Workbench ou via terminal. Ele cria o banco <code>biblioteca</code>, as 6 tabelas e insere dados de exemplo (2 funcionários, 2 leitores, 2 obras, 3 cópias).</div>
-          <div class="step-tip">mysql -u root -p &lt; sql/banco.sql</div>
+          <div class="step-title">Execute o banco_v2.sql</div>
+          <div class="step-desc">Rode o script no MySQL Workbench ou via terminal. Ele cria o banco <code>biblioteca_v2</code>, as 5 tabelas e insere dados de exemplo (2 funcionários, 2 leitores, 3 obras).</div>
+          <div class="step-tip">mysql -u root -p &lt; sql/banco_v2.sql</div>
         </div>
       </div>
 
@@ -700,7 +915,7 @@
         <div class="step-num">02</div>
         <div class="step-body">
           <div class="step-title">Ajuste ConexaoDAO.java</div>
-          <div class="step-desc">Abra <code>src/dao/ConexaoDAO.java</code> e altere <code>USER</code> e <code>PASS</code> com suas credenciais do MySQL. <strong>Só nesse arquivo</strong> — todos os outros DAOs usam ele.</div>
+          <div class="step-desc">Abra <code>src/dao/ConexaoDAO.java</code> e altere <code>USER</code> e <code>PASS</code> com suas credenciais do MySQL. <strong>Só nesse arquivo</strong> — todos os outros DAOs usam ele. A URL já aponta para <code>biblioteca_v2</code>.</div>
         </div>
       </div>
 
@@ -708,7 +923,7 @@
         <div class="step-num">03</div>
         <div class="step-body">
           <div class="step-title">Adicione o conector MySQL</div>
-          <div class="step-desc">Coloque o <code>mysql-connector-j-x.x.x.jar</code> na pasta <code>lib/</code> do projeto e adicione às Referenced Libraries no VSCode (painel JAVA PROJECTS → + ao lado de Referenced Libraries).</div>
+          <div class="step-desc">O arquivo <code>mysql-connector-j-9.7.0.jar</code> já está na pasta <code>lib/</code>. Adicione-o às Referenced Libraries no VSCode (painel JAVA PROJECTS → + ao lado de Referenced Libraries) ou equivalente na sua IDE.</div>
         </div>
       </div>
 
@@ -716,7 +931,7 @@
         <div class="step-num">04</div>
         <div class="step-body">
           <div class="step-title">Rode Main.java</div>
-          <div class="step-desc">Clique no ▶ acima do método <code>main</code>. A janela principal abre com 7 abas. Se der erro de conexão, a mensagem aparece em vermelho — verifique as credenciais.</div>
+          <div class="step-desc">Clique no ▶ acima do método <code>main</code>. A janela principal abre com <strong>6 abas</strong>. Se der erro de conexão, a mensagem aparece em vermelho — verifique as credenciais.</div>
         </div>
       </div>
 
@@ -724,7 +939,7 @@
         <div class="step-num">05</div>
         <div class="step-body">
           <div class="step-title">Cadastre na ordem certa</div>
-          <div class="step-desc">Siga a dependência entre entidades: <strong>Funcionários → Leitores → Obras → Cópias</strong>. Cópias dependem de obras existirem no banco. Os dados de exemplo já cobrem isso.</div>
+          <div class="step-desc">Siga a dependência entre entidades: <strong>Funcionários → Leitores → Obras</strong>. Ao cadastrar uma obra, informe o código de barras e a quantidade de exemplares. Os dados de exemplo já cobrem isso.</div>
         </div>
       </div>
 
@@ -732,7 +947,7 @@
         <div class="step-num">06</div>
         <div class="step-body">
           <div class="step-title">Registre um empréstimo</div>
-          <div class="step-desc">Na aba <strong>Empréstimos</strong>, os ComboBoxes carregam Leitor, Cópia e Funcionário diretamente do banco. Selecione e clique em "Registrar Empréstimo".</div>
+          <div class="step-desc">Na aba <strong>Empréstimos</strong>, os ComboBoxes carregam Leitor, Funcionário e apenas <strong>Obras disponíveis</strong> do banco. Defina o prazo em dias — a data prevista é calculada automaticamente.</div>
         </div>
       </div>
 
@@ -740,7 +955,7 @@
         <div class="step-num">07</div>
         <div class="step-body">
           <div class="step-title">Registre a devolução</div>
-          <div class="step-desc">Na aba <strong>Devoluções</strong>, só aparecem empréstimos em aberto (<code>data_devolucao IS NULL</code>). Selecione na tabela e clique no botão para registrar com a data de hoje.</div>
+          <div class="step-desc">Na aba <strong>Devoluções</strong>, só aparecem empréstimos em aberto. Empréstimos com prazo vencido são marcados com ⚠. Ao devolver, o estoque da obra é incrementado automaticamente.</div>
         </div>
       </div>
 
@@ -748,7 +963,7 @@
         <div class="step-num">08</div>
         <div class="step-body">
           <div class="step-title">Faça uma reserva</div>
-          <div class="step-desc">Na aba <strong>Reservas</strong>, escolha leitor e obra via ComboBox e registre. Para cancelar, selecione na tabela e clique em "Cancelar Selecionada".</div>
+          <div class="step-desc">Na aba <strong>Reservas</strong>, escolha leitor e obra via ComboBox e registre. Cada leitor pode ter no máximo <strong>3 reservas ativas</strong>. Para cancelar, selecione na tabela e clique em "Cancelar Selecionada".</div>
         </div>
       </div>
 
@@ -758,7 +973,7 @@
   <!-- BANCO -->
   <div id="banco" class="panel">
     <h2 class="section-title">Estrutura do <em>banco</em></h2>
-    <p class="section-desc">6 tabelas relacionadas via chaves estrangeiras. Script completo em sql/banco.sql.</p>
+    <p class="section-desc">5 tabelas relacionadas via chaves estrangeiras. Script completo em sql/banco_v2.sql.</p>
 
     <div class="schema-grid">
 
@@ -767,37 +982,37 @@
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
         <div class="table-field"><span class="field-name">nome</span><span class="field-type">VARCHAR(100)</span></div>
         <div class="table-field"><span class="field-name">cargo</span><span class="field-type">VARCHAR(80)</span></div>
+        <div class="table-field"><span class="field-name">matricula_func<span class="badge-uniq">UNIQUE</span><span class="badge-new">novo</span></span><span class="field-type">VARCHAR(30)</span></div>
+        <div class="table-field"><span class="field-name">ativo<span class="badge-new">novo</span></span><span class="field-type">BOOLEAN</span></div>
       </div>
 
       <div class="table-card">
         <div class="table-header">leitor</div>
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
         <div class="table-field"><span class="field-name">nome</span><span class="field-type">VARCHAR(100)</span></div>
-        <div class="table-field"><span class="field-name">matricula</span><span class="field-type">VARCHAR(30) UNIQUE</span></div>
+        <div class="table-field"><span class="field-name">matricula<span class="badge-uniq">UNIQUE</span></span><span class="field-type">VARCHAR(30)</span></div>
+        <div class="table-field"><span class="field-name">ativo<span class="badge-new">novo</span></span><span class="field-type">BOOLEAN</span></div>
       </div>
 
       <div class="table-card">
-        <div class="table-header">obra</div>
+        <div class="table-header">obra — unificada com copia</div>
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
         <div class="table-field"><span class="field-name">titulo</span><span class="field-type">VARCHAR(200)</span></div>
         <div class="table-field"><span class="field-name">autor</span><span class="field-type">VARCHAR(100)</span></div>
-      </div>
-
-      <div class="table-card">
-        <div class="table-header">copia — agregação</div>
-        <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
-        <div class="table-field"><span class="field-name">id_obra<span class="badge-fk">FK</span></span><span class="field-type">→ obra.id</span></div>
-        <div class="table-field"><span class="field-name">codigo_barras</span><span class="field-type">VARCHAR(50) UNIQUE</span></div>
+        <div class="table-field"><span class="field-name">codigo_barras<span class="badge-uniq">UNIQUE</span><span class="badge-new">novo</span></span><span class="field-type">VARCHAR(50)</span></div>
+        <div class="table-field"><span class="field-name">quantidade_total<span class="badge-new">novo</span></span><span class="field-type">INT</span></div>
+        <div class="table-field"><span class="field-name">quantidade_disponivel<span class="badge-new">novo</span></span><span class="field-type">INT</span></div>
       </div>
 
       <div class="table-card">
         <div class="table-header">emprestimo — associação</div>
         <div class="table-field"><span class="field-name">id<span class="badge-pk">PK</span></span><span class="field-type">INT AUTO_INCREMENT</span></div>
         <div class="table-field"><span class="field-name">id_leitor<span class="badge-fk">FK</span></span><span class="field-type">→ leitor.id</span></div>
-        <div class="table-field"><span class="field-name">id_copia<span class="badge-fk">FK</span></span><span class="field-type">→ copia.id</span></div>
+        <div class="table-field"><span class="field-name">id_obra<span class="badge-fk">FK</span><span class="badge-new">atualizado</span></span><span class="field-type">→ obra.id</span></div>
         <div class="table-field"><span class="field-name">id_funcionario<span class="badge-fk">FK</span></span><span class="field-type">→ funcionario.id</span></div>
         <div class="table-field"><span class="field-name">data_emprestimo</span><span class="field-type">DATE</span></div>
-        <div class="table-field"><span class="field-name">data_devolucao<span class="badge-null">NULL</span></span><span class="field-type">DATE — null = aberto</span></div>
+        <div class="table-field"><span class="field-name">data_prevista_devolucao<span class="badge-new">novo</span></span><span class="field-type">DATE</span></div>
+        <div class="table-field"><span class="field-name">data_devolucao_real<span class="badge-null">NULL</span></span><span class="field-type">DATE — null = aberto</span></div>
       </div>
 
       <div class="table-card">
@@ -814,7 +1029,7 @@
 </main>
 
 <footer>
-  <span>Sistema de Biblioteca — Projeto P2</span>
+  <span>Sistema de Biblioteca — Projeto P2 · v2</span>
   <span>Java · Swing · JDBC · MySQL</span>
 </footer>
 
